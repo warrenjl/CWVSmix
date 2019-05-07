@@ -6,55 +6,233 @@
 
 using namespace Rcpp;
 
-// rcpparma_hello_world
-arma::mat rcpparma_hello_world();
-RcppExport SEXP _CWMix_rcpparma_hello_world() {
+// CWMix
+Rcpp::List CWMix(int mcmc_samples, int p, int q, arma::vec y, arma::mat x, arma::mat z, arma::vec metrop_var_phi_trans, arma::vec metrop_scale_Lambda, Rcpp::Nullable<double> sigma2_beta_prior, Rcpp::Nullable<double> alpha_beta_sigma2_prior, Rcpp::Nullable<double> beta_beta_sigma2_prior, Rcpp::Nullable<double> alpha_beta_phi_prior, Rcpp::Nullable<double> beta_beta_phi_prior, Rcpp::Nullable<double> alpha_Lambda_prior, Rcpp::Nullable<Rcpp::NumericVector> beta_init, Rcpp::Nullable<Rcpp::NumericMatrix> eta_init, Rcpp::Nullable<Rcpp::NumericVector> sigma2_eta_init, Rcpp::Nullable<double> beta_sigma2_init, Rcpp::Nullable<Rcpp::NumericVector> phi_init, Rcpp::Nullable<double> beta_phi_init, Rcpp::Nullable<Rcpp::NumericMatrix> Lambda_init);
+RcppExport SEXP _CWMix_CWMix(SEXP mcmc_samplesSEXP, SEXP pSEXP, SEXP qSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP metrop_var_phi_transSEXP, SEXP metrop_scale_LambdaSEXP, SEXP sigma2_beta_priorSEXP, SEXP alpha_beta_sigma2_priorSEXP, SEXP beta_beta_sigma2_priorSEXP, SEXP alpha_beta_phi_priorSEXP, SEXP beta_beta_phi_priorSEXP, SEXP alpha_Lambda_priorSEXP, SEXP beta_initSEXP, SEXP eta_initSEXP, SEXP sigma2_eta_initSEXP, SEXP beta_sigma2_initSEXP, SEXP phi_initSEXP, SEXP beta_phi_initSEXP, SEXP Lambda_initSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpparma_hello_world());
+    Rcpp::traits::input_parameter< int >::type mcmc_samples(mcmc_samplesSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type metrop_var_phi_trans(metrop_var_phi_transSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type metrop_scale_Lambda(metrop_scale_LambdaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type sigma2_beta_prior(sigma2_beta_priorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type alpha_beta_sigma2_prior(alpha_beta_sigma2_priorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type beta_beta_sigma2_prior(beta_beta_sigma2_priorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type alpha_beta_phi_prior(alpha_beta_phi_priorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type beta_beta_phi_prior(beta_beta_phi_priorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type alpha_Lambda_prior(alpha_Lambda_priorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type beta_init(beta_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericMatrix> >::type eta_init(eta_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type sigma2_eta_init(sigma2_eta_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type beta_sigma2_init(beta_sigma2_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type phi_init(phi_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type beta_phi_init(beta_phi_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericMatrix> >::type Lambda_init(Lambda_initSEXP);
+    rcpp_result_gen = Rcpp::wrap(CWMix(mcmc_samples, p, q, y, x, z, metrop_var_phi_trans, metrop_scale_Lambda, sigma2_beta_prior, alpha_beta_sigma2_prior, beta_beta_sigma2_prior, alpha_beta_phi_prior, beta_beta_phi_prior, alpha_Lambda_prior, beta_init, eta_init, sigma2_eta_init, beta_sigma2_init, phi_init, beta_phi_init, Lambda_init));
     return rcpp_result_gen;
 END_RCPP
 }
-// rcpparma_outerproduct
-arma::mat rcpparma_outerproduct(const arma::colvec& x);
-RcppExport SEXP _CWMix_rcpparma_outerproduct(SEXP xSEXP) {
+// Lambda_update
+Rcpp::List Lambda_update(arma::mat Lambda_old, int ind, int p, int q, arma::mat x, arma::mat z, double alpha_Lambda, arma::vec w, arma::vec gamma, arma::vec beta, arma::mat eta, double metrop_scale_Lambda, int acctot_Lambda);
+RcppExport SEXP _CWMix_Lambda_update(SEXP Lambda_oldSEXP, SEXP indSEXP, SEXP pSEXP, SEXP qSEXP, SEXP xSEXP, SEXP zSEXP, SEXP alpha_LambdaSEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP etaSEXP, SEXP metrop_scale_LambdaSEXP, SEXP acctot_LambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpparma_outerproduct(x));
+    Rcpp::traits::input_parameter< arma::mat >::type Lambda_old(Lambda_oldSEXP);
+    Rcpp::traits::input_parameter< int >::type ind(indSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha_Lambda(alpha_LambdaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type w(wSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< double >::type metrop_scale_Lambda(metrop_scale_LambdaSEXP);
+    Rcpp::traits::input_parameter< int >::type acctot_Lambda(acctot_LambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(Lambda_update(Lambda_old, ind, p, q, x, z, alpha_Lambda, w, gamma, beta, eta, metrop_scale_Lambda, acctot_Lambda));
     return rcpp_result_gen;
 END_RCPP
 }
-// rcpparma_innerproduct
-double rcpparma_innerproduct(const arma::colvec& x);
-RcppExport SEXP _CWMix_rcpparma_innerproduct(SEXP xSEXP) {
+// beta_phi_update
+double beta_phi_update(int q, arma::vec phi, double alpha_beta_phi, double beta_beta_phi);
+RcppExport SEXP _CWMix_beta_phi_update(SEXP qSEXP, SEXP phiSEXP, SEXP alpha_beta_phiSEXP, SEXP beta_beta_phiSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpparma_innerproduct(x));
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha_beta_phi(alpha_beta_phiSEXP);
+    Rcpp::traits::input_parameter< double >::type beta_beta_phi(beta_beta_phiSEXP);
+    rcpp_result_gen = Rcpp::wrap(beta_phi_update(q, phi, alpha_beta_phi, beta_beta_phi));
     return rcpp_result_gen;
 END_RCPP
 }
-// rcpparma_bothproducts
-Rcpp::List rcpparma_bothproducts(const arma::colvec& x);
-RcppExport SEXP _CWMix_rcpparma_bothproducts(SEXP xSEXP) {
+// beta_sigma2_update
+double beta_sigma2_update(int q, arma::vec sigma2_eta, double alpha_beta_sigma2, double beta_beta_sigma2);
+RcppExport SEXP _CWMix_beta_sigma2_update(SEXP qSEXP, SEXP sigma2_etaSEXP, SEXP alpha_beta_sigma2SEXP, SEXP beta_beta_sigma2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpparma_bothproducts(x));
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type sigma2_eta(sigma2_etaSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha_beta_sigma2(alpha_beta_sigma2SEXP);
+    Rcpp::traits::input_parameter< double >::type beta_beta_sigma2(beta_beta_sigma2SEXP);
+    rcpp_result_gen = Rcpp::wrap(beta_sigma2_update(q, sigma2_eta, alpha_beta_sigma2, beta_beta_sigma2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// beta_update
+arma::vec beta_update(int p, int q, arma::mat x, arma::mat z, double sigma2_beta, arma::vec w, arma::vec gamma, arma::mat eta_old, arma::mat Lambda_old);
+RcppExport SEXP _CWMix_beta_update(SEXP pSEXP, SEXP qSEXP, SEXP xSEXP, SEXP zSEXP, SEXP sigma2_betaSEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP eta_oldSEXP, SEXP Lambda_oldSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma2_beta(sigma2_betaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type w(wSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type eta_old(eta_oldSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Lambda_old(Lambda_oldSEXP);
+    rcpp_result_gen = Rcpp::wrap(beta_update(p, q, x, z, sigma2_beta, w, gamma, eta_old, Lambda_old));
+    return rcpp_result_gen;
+END_RCPP
+}
+// eta_update
+arma::mat eta_update(int p, int q, arma::mat x, arma::mat z, arma::vec w, arma::vec gamma, arma::vec beta, arma::vec sigma2_eta_old, Rcpp::List temporal_corr_info, arma::mat Lambda_old);
+RcppExport SEXP _CWMix_eta_update(SEXP pSEXP, SEXP qSEXP, SEXP xSEXP, SEXP zSEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP sigma2_eta_oldSEXP, SEXP temporal_corr_infoSEXP, SEXP Lambda_oldSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type w(wSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type sigma2_eta_old(sigma2_eta_oldSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type temporal_corr_info(temporal_corr_infoSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Lambda_old(Lambda_oldSEXP);
+    rcpp_result_gen = Rcpp::wrap(eta_update(p, q, x, z, w, gamma, beta, sigma2_eta_old, temporal_corr_info, Lambda_old));
+    return rcpp_result_gen;
+END_RCPP
+}
+// neg_two_loglike_update
+double neg_two_loglike_update(int p, int q, arma::vec y, arma::mat x, arma::mat z, arma::vec beta, arma::mat eta, arma::mat Lambda);
+RcppExport SEXP _CWMix_neg_two_loglike_update(SEXP pSEXP, SEXP qSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP betaSEXP, SEXP etaSEXP, SEXP LambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Lambda(LambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(neg_two_loglike_update(p, q, y, x, z, beta, eta, Lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
+// phi_update
+Rcpp::List phi_update(double phi_old, arma::vec eta, double sigma2_eta, Rcpp::List temporal_corr_info, double beta_phi_old, double metrop_var_phi_trans, int acctot_phi_trans);
+RcppExport SEXP _CWMix_phi_update(SEXP phi_oldSEXP, SEXP etaSEXP, SEXP sigma2_etaSEXP, SEXP temporal_corr_infoSEXP, SEXP beta_phi_oldSEXP, SEXP metrop_var_phi_transSEXP, SEXP acctot_phi_transSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type phi_old(phi_oldSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma2_eta(sigma2_etaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type temporal_corr_info(temporal_corr_infoSEXP);
+    Rcpp::traits::input_parameter< double >::type beta_phi_old(beta_phi_oldSEXP);
+    Rcpp::traits::input_parameter< double >::type metrop_var_phi_trans(metrop_var_phi_transSEXP);
+    Rcpp::traits::input_parameter< int >::type acctot_phi_trans(acctot_phi_transSEXP);
+    rcpp_result_gen = Rcpp::wrap(phi_update(phi_old, eta, sigma2_eta, temporal_corr_info, beta_phi_old, metrop_var_phi_trans, acctot_phi_trans));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rcpp_pgdraw
+arma::vec rcpp_pgdraw(double b, arma::vec c);
+RcppExport SEXP _CWMix_rcpp_pgdraw(SEXP bSEXP, SEXP cSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_pgdraw(b, c));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sigma2_eta_update
+double sigma2_eta_update(int p, arma::mat z, arma::vec eta, arma::mat corr_inv, double beta_sigma2_old);
+RcppExport SEXP _CWMix_sigma2_eta_update(SEXP pSEXP, SEXP zSEXP, SEXP etaSEXP, SEXP corr_invSEXP, SEXP beta_sigma2_oldSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type corr_inv(corr_invSEXP);
+    Rcpp::traits::input_parameter< double >::type beta_sigma2_old(beta_sigma2_oldSEXP);
+    rcpp_result_gen = Rcpp::wrap(sigma2_eta_update(p, z, eta, corr_inv, beta_sigma2_old));
+    return rcpp_result_gen;
+END_RCPP
+}
+// temporal_corr_fun
+Rcpp::List temporal_corr_fun(int p_z, double phi);
+RcppExport SEXP _CWMix_temporal_corr_fun(SEXP p_zSEXP, SEXP phiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type p_z(p_zSEXP);
+    Rcpp::traits::input_parameter< double >::type phi(phiSEXP);
+    rcpp_result_gen = Rcpp::wrap(temporal_corr_fun(p_z, phi));
+    return rcpp_result_gen;
+END_RCPP
+}
+// w_update
+Rcpp::List w_update(int p, int q, arma::vec y, arma::mat x, arma::mat z, arma::vec beta_old, arma::mat eta_old, arma::mat Lambda_old);
+RcppExport SEXP _CWMix_w_update(SEXP pSEXP, SEXP qSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP beta_oldSEXP, SEXP eta_oldSEXP, SEXP Lambda_oldSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_old(beta_oldSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type eta_old(eta_oldSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Lambda_old(Lambda_oldSEXP);
+    rcpp_result_gen = Rcpp::wrap(w_update(p, q, y, x, z, beta_old, eta_old, Lambda_old));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_CWMix_rcpparma_hello_world", (DL_FUNC) &_CWMix_rcpparma_hello_world, 0},
-    {"_CWMix_rcpparma_outerproduct", (DL_FUNC) &_CWMix_rcpparma_outerproduct, 1},
-    {"_CWMix_rcpparma_innerproduct", (DL_FUNC) &_CWMix_rcpparma_innerproduct, 1},
-    {"_CWMix_rcpparma_bothproducts", (DL_FUNC) &_CWMix_rcpparma_bothproducts, 1},
+    {"_CWMix_CWMix", (DL_FUNC) &_CWMix_CWMix, 21},
+    {"_CWMix_Lambda_update", (DL_FUNC) &_CWMix_Lambda_update, 13},
+    {"_CWMix_beta_phi_update", (DL_FUNC) &_CWMix_beta_phi_update, 4},
+    {"_CWMix_beta_sigma2_update", (DL_FUNC) &_CWMix_beta_sigma2_update, 4},
+    {"_CWMix_beta_update", (DL_FUNC) &_CWMix_beta_update, 9},
+    {"_CWMix_eta_update", (DL_FUNC) &_CWMix_eta_update, 10},
+    {"_CWMix_neg_two_loglike_update", (DL_FUNC) &_CWMix_neg_two_loglike_update, 8},
+    {"_CWMix_phi_update", (DL_FUNC) &_CWMix_phi_update, 7},
+    {"_CWMix_rcpp_pgdraw", (DL_FUNC) &_CWMix_rcpp_pgdraw, 2},
+    {"_CWMix_sigma2_eta_update", (DL_FUNC) &_CWMix_sigma2_eta_update, 5},
+    {"_CWMix_temporal_corr_fun", (DL_FUNC) &_CWMix_temporal_corr_fun, 2},
+    {"_CWMix_w_update", (DL_FUNC) &_CWMix_w_update, 8},
     {NULL, NULL, 0}
 };
 

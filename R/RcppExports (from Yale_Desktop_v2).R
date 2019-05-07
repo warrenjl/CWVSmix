@@ -21,8 +21,8 @@ beta_update <- function(p, q, x, z, sigma2_beta, w, gamma, eta_old, Lambda_old) 
     .Call(`_CWMix_beta_update`, p, q, x, z, sigma2_beta, w, gamma, eta_old, Lambda_old)
 }
 
-eta_update <- function(p, q, x, z, w, gamma, beta, sigma2_eta_old, temporal_corr_info, Lambda_old) {
-    .Call(`_CWMix_eta_update`, p, q, x, z, w, gamma, beta, sigma2_eta_old, temporal_corr_info, Lambda_old)
+eta_update <- function(p, q, x, z, w, gamma, beta, sigma2_eta, temporal_corr_info, Lambda_old) {
+    .Call(`_CWMix_eta_update`, p, q, x, z, w, gamma, beta, sigma2_eta, temporal_corr_info, Lambda_old)
 }
 
 neg_two_loglike_update <- function(p, q, y, x, z, beta, eta, Lambda) {
