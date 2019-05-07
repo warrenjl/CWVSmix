@@ -16,7 +16,7 @@ Rcpp::List w_update(int p,
                     arma::mat Lambda_old){
   
 int m = z.n_cols/p;  
-arma::mat ident(m, m); ident.eye();
+arma::mat ident(m,m); ident.eye();
 
 arma::vec eta_old_full(q*m); eta_old_full.fill(0.00);
 for(int j = 0; j < m; ++ j){

@@ -19,8 +19,8 @@ arma::mat eta_update(int p,
 
 int m = z.n_cols/p;  
 int n = w.size();
-arma::mat w_mat(n,(m*q));
-for(int j = 0; j < (m*q); ++j){
+arma::mat w_mat(n, (m*q));
+for(int j = 0; j < (m*q); ++ j){
    w_mat.col(j) = w;
    }
 
@@ -50,11 +50,11 @@ arma::mat cov_eta = inv_sympd(cov_piece_trans*(w_mat%cov_piece) +
 
 arma::vec mean_eta = cov_eta*(cov_piece_trans*(w%(gamma - x*beta)));
 
-arma::mat ind_norms = arma::randn(1, m*q);
+arma::mat ind_norms = arma::randn(1, (m*q));
 arma::vec eta_full = mean_eta + 
                      trans(ind_norms*arma::chol(cov_eta));
 
-arma::mat eta(q, m); eta.fill(0.00);
+arma::mat eta(q,m); eta.fill(0.00);
 for(int j = 0; j < m; ++ j){
    eta.col(j) = eta_full.subvec(j*q, (q*(j + 1) - 1));
    } 

@@ -21,7 +21,7 @@ arma::mat ident(m,m); ident.eye();
 arma::vec dens(n); dens.fill(0.00);
 
 arma::vec eta_full(q*m); eta_full.fill(0.00);
-for(int j = 0; j < m; ++j){
+for(int j = 0; j < m; ++ j){
    eta_full.subvec(j*q, (q*(j + 1) - 1)) = eta.col(j);
    } 
 
@@ -30,14 +30,14 @@ arma::vec logit_probs = x*beta +
 
 arma::vec probs = exp(logit_probs)/(1.00 + exp(logit_probs));
 
-for(int j = 0; j < n; ++j){
+for(int j = 0; j < n; ++ j){
    dens(j) = R::dbinom(y(j),
                        1,
                        probs(j),
                        TRUE);
    }
 
-double neg_two_loglike = -2.0*sum(dens);
+double neg_two_loglike = -2.00*sum(dens);
 
 return neg_two_loglike;
 

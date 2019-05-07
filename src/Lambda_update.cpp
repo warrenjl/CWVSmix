@@ -24,7 +24,7 @@ int m = z.n_cols/p;
 arma::mat ident(m,m); ident.eye();
 
 arma::vec eta_full(q*m); eta_full.fill(0.00);
-for(int j = 0; j < m; ++j){
+for(int j = 0; j < m; ++ j){
    eta_full.subvec(j*q, (q*(j + 1) - 1)) = eta.col(j);
    } 
 

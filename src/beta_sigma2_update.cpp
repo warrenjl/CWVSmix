@@ -7,9 +7,9 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 
 double beta_sigma2_update(int q,
-                          arma::vec sigma2_eta,
                           double alpha_beta_sigma2,
-                          double beta_beta_sigma2){
+                          double beta_beta_sigma2,
+                          arma::vec sigma2_eta){
 
 double alpha_beta_sigma2_update = q +
                                   alpha_beta_sigma2;

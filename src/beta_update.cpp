@@ -17,16 +17,16 @@ arma::vec beta_update(int p,
                       arma::mat Lambda_old){
 
 int m = z.n_cols/p;  
-arma::mat ident(m, m); ident.eye();
+arma::mat ident(m,m); ident.eye();
 int p_x = x.n_cols;
 int n = w.size();
 arma::mat w_mat(n, p_x);
-for(int j = 0; j < p_x; ++j){
+for(int j = 0; j < p_x; ++ j){
    w_mat.col(j) = w;
    }
 
 arma::vec eta_old_full(q*m); eta_old_full.fill(0.00);
-for(int j = 0; j < m; ++j){
+for(int j = 0; j < m; ++ j){
    eta_old_full.subvec(j*q, (q*(j + 1) - 1)) = eta_old.col(j);
    } 
 
