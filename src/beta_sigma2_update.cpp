@@ -1,7 +1,7 @@
 #include "RcppArmadillo.h"
 #include "CWMix.h"
 using namespace arma;
-using namespace Rcpp;
+using namespace Rcpp; 
 
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
