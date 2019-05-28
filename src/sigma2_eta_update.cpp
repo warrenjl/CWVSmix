@@ -14,7 +14,7 @@ double sigma2_eta_update(int p,
 
 int m = z.n_cols/p;
 double alpha_sigma2_eta_update = 0.50*m + 
-                                 1.00;
+                                 3.00;
 
 double beta_sigma2_eta_update = 0.50*dot(eta, ((corr_inv)*eta)) + 
                                 beta_sigma2_old;

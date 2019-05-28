@@ -15,11 +15,9 @@ Rcpp::List CWMix(int mcmc_samples,
                  arma::vec metrop_var_phi_trans,
                  arma::vec metrop_scale_Lambda,
                  Rcpp::Nullable<double> sigma2_beta_prior = R_NilValue,
-                 Rcpp::Nullable<double> alpha_beta_sigma2_prior = R_NilValue,
                  Rcpp::Nullable<double> beta_beta_sigma2_prior = R_NilValue,
                  Rcpp::Nullable<double> a_phi_prior = R_NilValue,
                  Rcpp::Nullable<double> b_phi_prior = R_NilValue,
-                 Rcpp::Nullable<double> alpha_beta_phi_prior = R_NilValue,
                  Rcpp::Nullable<double> beta_beta_phi_prior = R_NilValue,
                  Rcpp::Nullable<double> alpha_Lambda_prior = R_NilValue,
                  Rcpp::Nullable<Rcpp::NumericVector> beta_init = R_NilValue,
@@ -56,11 +54,6 @@ if(sigma2_beta_prior.isNotNull()){
   sigma2_beta = Rcpp::as<double>(sigma2_beta_prior);
   }
 
-double alpha_beta_sigma2 = 1.00;
-if(alpha_beta_sigma2_prior.isNotNull()){
-  alpha_beta_sigma2 = Rcpp::as<double>(alpha_beta_sigma2_prior);
-  }
-  
 double beta_beta_sigma2 = 1.00;
 if(beta_beta_sigma2_prior.isNotNull()){
   beta_beta_sigma2 = Rcpp::as<double>(beta_beta_sigma2_prior);
@@ -74,11 +67,6 @@ if(a_phi_prior.isNotNull()){
 double b_phi = log(0.0001)/(-1.00);
 if(b_phi_prior.isNotNull()){
   b_phi = Rcpp::as<double>(b_phi_prior);
-  }
-
-double alpha_beta_phi = 1.00;
-if(alpha_beta_phi_prior.isNotNull()){
-  alpha_beta_phi = Rcpp::as<double>(alpha_beta_phi_prior);
   }
 
 double beta_beta_phi = 1.00;
@@ -208,7 +196,6 @@ for(int j = 1; j < mcmc_samples; ++ j){
    
    //beta_sigma2 Update
    beta_sigma2(j) = beta_sigma2_update(q,
-                                       alpha_beta_sigma2,
                                        beta_beta_sigma2,
                                        sigma2_eta.col(j));
   
@@ -235,7 +222,6 @@ for(int j = 1; j < mcmc_samples; ++ j){
    beta_phi(j) = beta_phi_update(q,
                                  a_phi,
                                  b_phi,
-                                 alpha_beta_phi,
                                  beta_beta_phi,
                                  phi.col(j));
    

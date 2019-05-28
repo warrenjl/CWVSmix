@@ -44,7 +44,6 @@ double sigma2_eta_update(int p,
                          double beta_sigma2_old);
 
 double beta_sigma2_update(int q,
-                          double alpha_beta_sigma2,
                           double beta_beta_sigma2,
                           arma::vec sigma2_eta);
 
@@ -61,7 +60,6 @@ Rcpp::List phi_update(double phi_old,
 double beta_phi_update(int q,
                        double a_phi,
                        double b_phi,
-                       double alpha_beta_phi,
                        double beta_beta_phi,
                        arma::vec phi);
 
@@ -97,11 +95,9 @@ Rcpp::List CWMix(int mcmc_samples,
                  arma::vec metrop_var_phi_trans,
                  arma::vec metrop_scale_Lambda,
                  Rcpp::Nullable<double> sigma2_beta_prior,
-                 Rcpp::Nullable<double> alpha_beta_sigma2_prior,
                  Rcpp::Nullable<double> beta_beta_sigma2_prior,
                  Rcpp::Nullable<double> a_phi_prior,
                  Rcpp::Nullable<double> b_phi_prior,
-                 Rcpp::Nullable<double> alpha_beta_phi_prior,
                  Rcpp::Nullable<double> beta_beta_phi_prior,
                  Rcpp::Nullable<double> alpha_Lambda_prior,
                  Rcpp::Nullable<Rcpp::NumericVector> beta_init,
