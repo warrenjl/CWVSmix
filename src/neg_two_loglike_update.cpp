@@ -1,5 +1,5 @@
 #include "RcppArmadillo.h"
-#include "CWMix.h"
+#include "CWVSmix.h"
 using namespace arma;
 using namespace Rcpp;
 
@@ -12,18 +12,13 @@ double neg_two_loglike_update(int p,
                               arma::mat x,
                               arma::mat z, 
                               arma::vec beta,
-                              arma::mat eta,
-                              arma::mat Lambda){
+                              arma::mat Lambda,
+                              arma::vec eta_full){
 
 int n = y.size();
 int m = z.n_cols/p;  
-arma::mat ident(m,m); ident.eye();
+arma::mat ident(m, m); ident.eye();
 arma::vec dens(n); dens.fill(0.00);
-
-arma::vec eta_full(q*m); eta_full.fill(0.00);
-for(int j = 0; j < m; ++ j){
-   eta_full.subvec(j*q, (q*(j + 1) - 1)) = eta.col(j);
-   } 
 
 arma::vec logit_probs = x*beta + 
                         z*((kron(ident, Lambda))*eta_full);

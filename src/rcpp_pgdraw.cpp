@@ -24,7 +24,7 @@
 //#include <omp.h>
 
 #include "RcppArmadillo.h"
-#include "CWMix.h"
+#include "CWVSmix.h"
 using namespace arma;
 using namespace Rcpp;
 

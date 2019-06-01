@@ -1,5 +1,5 @@
 #include "RcppArmadillo.h"
-#include "CWMix.h"
+#include "CWVSmix.h"
 using namespace arma;
 using namespace Rcpp;
 
@@ -16,17 +16,12 @@ Rcpp::List Lambda_update(arma::mat Lambda_old,
                          arma::vec w,
                          arma::vec gamma,
                          arma::vec beta,
-                         arma::mat eta,
+                         arma::vec eta_full,
                          double metrop_scale_Lambda,
                          int acctot_Lambda){
   
 int m = z.n_cols/p;  
 arma::mat ident(m,m); ident.eye();
-
-arma::vec eta_full(q*m); eta_full.fill(0.00);
-for(int j = 0; j < m; ++ j){
-   eta_full.subvec(j*q, (q*(j + 1) - 1)) = eta.col(j);
-   } 
 
 /*First*/
 arma::vec Lambda_vec_temp(p - ind); Lambda_vec_temp.fill(0.00);

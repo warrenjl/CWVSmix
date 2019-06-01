@@ -1,5 +1,5 @@
 #include "RcppArmadillo.h"
-#include "CWMix.h"
+#include "CWVSmix.h"
 using namespace arma;
 using namespace Rcpp;
 
@@ -12,19 +12,14 @@ Rcpp::List w_update(int p,
                     arma::mat x,
                     arma::mat z,
                     arma::vec beta_old,
-                    arma::mat eta_old,
-                    arma::mat Lambda_old){
+                    arma::mat Lambda_old,
+                    arma::vec eta_full){
   
 int m = z.n_cols/p;  
-arma::mat ident(m,m); ident.eye();
-
-arma::vec eta_old_full(q*m); eta_old_full.fill(0.00);
-for(int j = 0; j < m; ++ j){
-   eta_old_full.subvec(j*q, (q*(j + 1) - 1)) = eta_old.col(j);
-   } 
+arma::mat ident(m, m); ident.eye();
 
 arma::vec mean_w = x*beta_old + 
-                   z*((kron(ident, Lambda_old))*eta_old_full);
+                   z*((kron(ident, Lambda_old))*eta_full);
 
 arma::vec w = rcpp_pgdraw(1.00,
                           mean_w);
