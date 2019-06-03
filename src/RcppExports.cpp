@@ -242,6 +242,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rtnorm_gibbs
+arma::vec rtnorm_gibbs(int n, double mu, double sigma, double a, double b);
+RcppExport SEXP _CWVSmix_rtnorm_gibbs(SEXP nSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(rtnorm_gibbs(n, mu, sigma, a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
 // w1_update
 Rcpp::List w1_update(int p, int q, arma::mat x, arma::mat z, arma::vec w, arma::vec gamma, arma::vec beta, arma::mat Lambda, arma::mat delta, arma::mat delta_star, arma::mat w2_old, arma::vec A11_old, arma::vec A22_old, arma::vec A21_old, Rcpp::List temporal_corr_info1);
 RcppExport SEXP _CWVSmix_w1_update(SEXP pSEXP, SEXP qSEXP, SEXP xSEXP, SEXP zSEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP LambdaSEXP, SEXP deltaSEXP, SEXP delta_starSEXP, SEXP w2_oldSEXP, SEXP A11_oldSEXP, SEXP A22_oldSEXP, SEXP A21_oldSEXP, SEXP temporal_corr_info1SEXP) {
@@ -316,6 +331,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CWVSmix_phi_update", (DL_FUNC) &_CWVSmix_phi_update, 7},
     {"_CWVSmix_rcpp_pgdraw", (DL_FUNC) &_CWVSmix_rcpp_pgdraw, 2},
     {"_CWVSmix_temporal_corr_fun", (DL_FUNC) &_CWVSmix_temporal_corr_fun, 2},
+    {"_CWVSmix_rtnorm_gibbs", (DL_FUNC) &_CWVSmix_rtnorm_gibbs, 5},
     {"_CWVSmix_w1_update", (DL_FUNC) &_CWVSmix_w1_update, 15},
     {"_CWVSmix_w2_update", (DL_FUNC) &_CWVSmix_w2_update, 7},
     {"_CWVSmix_w_update", (DL_FUNC) &_CWVSmix_w_update, 8},

@@ -4,6 +4,12 @@
 arma::vec rcpp_pgdraw(double b, 
                       arma::vec c);
 
+arma::vec rtnorm_gibbs(int n, 
+                       double mu, 
+                       double sigma, 
+                       double a, 
+                       double b);
+
 Rcpp::List temporal_corr_fun(int p_z,
                              double phi);
 

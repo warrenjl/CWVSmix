@@ -49,6 +49,10 @@ temporal_corr_fun <- function(p_z, phi) {
     .Call(`_CWVSmix_temporal_corr_fun`, p_z, phi)
 }
 
+rtnorm_gibbs <- function(n, mu, sigma, a, b) {
+    .Call(`_CWVSmix_rtnorm_gibbs`, n, mu, sigma, a, b)
+}
+
 w1_update <- function(p, q, x, z, w, gamma, beta, Lambda, delta, delta_star, w2_old, A11_old, A22_old, A21_old, temporal_corr_info1) {
     .Call(`_CWVSmix_w1_update`, p, q, x, z, w, gamma, beta, Lambda, delta, delta_star, w2_old, A11_old, A22_old, A21_old, temporal_corr_info1)
 }
