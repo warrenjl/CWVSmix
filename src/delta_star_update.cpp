@@ -41,8 +41,8 @@ for(int j = 0; j < q; ++ j){
           delta_star(k,j) = rtnorm_gibbs(1, 
                                          alpha(k), 
                                          1.00,
-                                         0.00, 
-                                         -arma::math::inf())(0);
+                                         -arma::math::inf(),
+                                         0.00)(0);
     //      while(delta_star(k,j) >= 0.00){
     //           delta_star(k,j) = R::rnorm(alpha(k),
     //                                      sqrt(1.00));
@@ -63,8 +63,8 @@ for(int j = 0; j < q; ++ j){
           delta_star(k,j) = rtnorm_gibbs(1, 
                                          alpha(k), 
                                          1.00,
-                                         0.00, 
-                                         -arma::math::inf())(0);
+                                         -arma::math::inf(),
+                                         0.00)(0);
           //while(delta_star(k,j) >= 0.00){
           //     delta_star(k,j) = R::rnorm(alpha(k),
           //                                sqrt(1.00));
