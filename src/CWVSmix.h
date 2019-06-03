@@ -59,8 +59,8 @@ Rcpp::List delta_update(arma::mat delta_old,
 arma::mat delta_star_update(arma::mat delta,
                             arma::mat w1_old,
                             arma::mat w2_old,
-                            arma::vec A21_old,
-                            arma::vec A22_old);
+                            arma::vec A22_old,
+                            arma::vec A21_old);
 
 Rcpp::List w1_update(int p,
                      int q,
@@ -74,16 +74,16 @@ Rcpp::List w1_update(int p,
                      arma::mat delta_star,
                      arma::mat w2_old,
                      arma::vec A11_old,
-                     arma::vec A21_old,
                      arma::vec A22_old,
+                     arma::vec A21_old,
                      Rcpp::List temporal_corr_info1);
 
 arma::vec w2_update(int p,
                     arma::mat z,
                     arma::vec delta_star,
                     arma::vec w1,
-                    double A21_old,
                     double A22_old,
+                    double A21_old,
                     arma::mat corr_inv2);
 
 Rcpp::List A11_update(arma::vec A11_old,

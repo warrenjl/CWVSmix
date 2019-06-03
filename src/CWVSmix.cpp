@@ -182,8 +182,8 @@ arma::vec w1_full(m*q); w1_full.fill(0.00);
 arma::vec A11_diag(m*q); A11_diag.fill(0.00);
 for(int j = 0; j < m; ++ j){
   
-   delta_diag.subvec((j*q), (q*(j + 1) - 1)) = delta_temp.row(j);
-   w1_full.subvec((j*q), (q*(j + 1) - 1)) = w1_temp.row(j);
+   delta_diag.subvec((j*q), (q*(j + 1) - 1)) = trans(delta_temp.row(j));
+   w1_full.subvec((j*q), (q*(j + 1) - 1)) = trans(w1_temp.row(j));
    A11_diag.subvec((j*q), (q*(j + 1) - 1)) = A11.col(0);
   
    }
@@ -280,8 +280,8 @@ for(int j = 1; j < mcmc_samples; ++ j){
    arma::mat delta_star = delta_star_update(delta[j],
                                             w1[j-1],
                                             w2[j-1],
-                                            A21.col(j-1),
-                                            A22.col(j-1));
+                                            A22.col(j-1),
+                                            A21.col(j-1));
    
    //w1 Update
    Rcpp::List w1_output = w1_update(p,
@@ -296,8 +296,8 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                     delta_star,
                                     w2[j-1],
                                     A11.col(j-1),
-                                    A21.col(j-1),
                                     A22.col(j-1),
+                                    A21.col(j-1),
                                     temporal_corr_info1);
    
    w1[j] = w1_output[0];
@@ -313,8 +313,8 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                  z,
                                  delta_star.col(k),
                                  w1_temp.col(k),
-                                 A21(k, (j-1)),
                                  A22(k, (j-1)),
+                                 A21(k, (j-1)),
                                  temporal_corr_info2_temp[0]);
       
       }
@@ -336,7 +336,7 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                       metrop_var_A11_trans,
                                       acctot_A11_trans);
    
-   A11.col(j) = Rcpp::as<double>(A11_output[0]);
+   A11.col(j) = Rcpp::as<arma::vec>(A11_output[0]);
    eta_full = Rcpp::as<arma::vec>(A11_output[1]);
    acctot_A11_trans = Rcpp::as<arma::vec>(A11_output[2]);
    

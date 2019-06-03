@@ -25,8 +25,8 @@ beta_update <- function(p, q, x, z, sigma2_beta, w, gamma, Lambda_old, eta_full)
     .Call(`_CWVSmix_beta_update`, p, q, x, z, sigma2_beta, w, gamma, Lambda_old, eta_full)
 }
 
-delta_star_update <- function(delta, w1_old, w2_old, A21_old, A22_old) {
-    .Call(`_CWVSmix_delta_star_update`, delta, w1_old, w2_old, A21_old, A22_old)
+delta_star_update <- function(delta, w1_old, w2_old, A22_old, A21_old) {
+    .Call(`_CWVSmix_delta_star_update`, delta, w1_old, w2_old, A22_old, A21_old)
 }
 
 delta_update <- function(delta_old, p, q, y, x, z, w, gamma, beta, Lambda, w1_old, w2_old, A11_old, A22_old, A21_old) {
@@ -49,12 +49,12 @@ temporal_corr_fun <- function(p_z, phi) {
     .Call(`_CWVSmix_temporal_corr_fun`, p_z, phi)
 }
 
-w1_update <- function(p, q, x, z, w, gamma, beta, Lambda, delta, delta_star, w2_old, A11_old, A21_old, A22_old, temporal_corr_info1) {
-    .Call(`_CWVSmix_w1_update`, p, q, x, z, w, gamma, beta, Lambda, delta, delta_star, w2_old, A11_old, A21_old, A22_old, temporal_corr_info1)
+w1_update <- function(p, q, x, z, w, gamma, beta, Lambda, delta, delta_star, w2_old, A11_old, A22_old, A21_old, temporal_corr_info1) {
+    .Call(`_CWVSmix_w1_update`, p, q, x, z, w, gamma, beta, Lambda, delta, delta_star, w2_old, A11_old, A22_old, A21_old, temporal_corr_info1)
 }
 
-w2_update <- function(p, z, delta_star, w1, A21_old, A22_old, corr_inv2) {
-    .Call(`_CWVSmix_w2_update`, p, z, delta_star, w1, A21_old, A22_old, corr_inv2)
+w2_update <- function(p, z, delta_star, w1, A22_old, A21_old, corr_inv2) {
+    .Call(`_CWVSmix_w2_update`, p, z, delta_star, w1, A22_old, A21_old, corr_inv2)
 }
 
 w_update <- function(p, q, y, x, z, beta_old, Lambda_old, eta_full) {

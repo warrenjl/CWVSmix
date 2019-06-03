@@ -9,8 +9,8 @@ using namespace Rcpp;
 arma::mat delta_star_update(arma::mat delta,
                             arma::mat w1_old,
                             arma::mat w2_old,
-                            arma::vec A21_old,
-                            arma::vec A22_old){
+                            arma::vec A22_old,
+                            arma::vec A21_old){
   
 int q = delta.n_cols;
 int m = delta.n_rows;

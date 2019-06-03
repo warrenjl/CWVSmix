@@ -10,8 +10,8 @@ arma::vec w2_update(int p,
                     arma::mat z,
                     arma::vec delta_star,
                     arma::vec w1,
-                    double A21_old,
                     double A22_old,
+                    double A21_old,
                     arma::mat corr_inv2){
   
 int m = z.n_cols/p;  

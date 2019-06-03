@@ -31,9 +31,9 @@ arma::vec w2_full(m*q); w2_full.fill(0.00);
 arma::vec A11_diag(m*q); A11_diag.fill(0.00);
 for(int j = 0; j < m; ++ j){
     
-   delta_diag.subvec((j*q), (q*(j + 1) - 1)) = delta_old.row(j);
-   w1_full.subvec((j*q), (q*(j + 1) - 1)) = w1_old.row(j);
-   w2_full.subvec((j*q), (q*(j + 1) - 1)) = w2_old.row(j);
+   delta_diag.subvec((j*q), (q*(j + 1) - 1)) = trans(delta_old.row(j));
+   w1_full.subvec((j*q), (q*(j + 1) - 1)) = trans(w1_old.row(j));
+   w2_full.subvec((j*q), (q*(j + 1) - 1)) = trans(w2_old.row(j));
    A11_diag.subvec((j*q), (q*(j + 1) - 1)) = A11_old;
     
    }

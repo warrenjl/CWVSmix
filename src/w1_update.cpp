@@ -18,8 +18,8 @@ Rcpp::List w1_update(int p,
                      arma::mat delta_star,
                      arma::mat w2_old,
                      arma::vec A11_old,
-                     arma::vec A21_old,
                      arma::vec A22_old,
+                     arma::vec A21_old,
                      Rcpp::List temporal_corr_info1){
 
 int m = z.n_cols/p;
@@ -27,14 +27,16 @@ arma::mat ident(m, m); ident.eye();
 int n = w.size();
 
 arma::vec delta_diag(m*q); delta_diag.fill(0.00); 
+arma::vec delta_star_diag(m*q); delta_star_diag.fill(0.00); 
 arma::vec w2_full(m*q); w2_full.fill(0.00);
 arma::vec A11_diag(m*q); A11_diag.fill(0.00);
 arma::vec A22_diag(m*q); A22_diag.fill(0.00);
 arma::vec A21_diag(m*q); A21_diag.fill(0.00);
 for(int j = 0; j < m; ++ j){
   
-   delta_diag.subvec((j*q), (q*(j + 1) - 1)) = delta.row(j);
-   w2_full.subvec((j*q), (q*(j + 1) - 1)) = w2_old.row(j);
+   delta_diag.subvec((j*q), (q*(j + 1) - 1)) = trans(delta.row(j));
+   delta_star_diag.subvec((j*q), (q*(j + 1) - 1)) = trans(delta_star.row(j));
+   w2_full.subvec((j*q), (q*(j + 1) - 1)) = trans(w2_old.row(j));
    A11_diag.subvec((j*q), (q*(j + 1) - 1)) = A11_old;
    A22_diag.subvec((j*q), (q*(j + 1) - 1)) = A22_old;
    A21_diag.subvec((j*q), (q*(j + 1) - 1)) = A21_old;
@@ -69,7 +71,7 @@ arma::mat cov_w1 = inv_sympd(cov_piece_trans*(w_mat%cov_piece) +
                              Sigma1_inv);
 
 arma::vec mean_w1 = cov_w1*(cov_piece_trans*(w%(gamma - x*beta)) + 
-                            diagmat(A21_diag)*(delta_star - A22_diag%w2_full));
+                            diagmat(A21_diag)*(delta_star_diag - A22_diag%w2_full));
 
 arma::mat ind_norms = arma::randn(1, (m*q));
 arma::vec w1_full = mean_w1 +                   

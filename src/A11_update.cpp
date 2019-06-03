@@ -29,8 +29,8 @@ arma::vec delta_diag(m*q); delta_diag.fill(0.00);
 arma::vec w1_full(m*q); w1_full.fill(0.00);
 for(int j = 0; j < m; ++ j){
   
-   delta_diag.subvec((j*q), (q*(j + 1) - 1)) = delta.row(j);
-   w1_full.subvec((j*q), (q*(j + 1) - 1)) = w1.row(j);
+   delta_diag.subvec((j*q), (q*(j + 1) - 1)) = trans(delta.row(j));
+   w1_full.subvec((j*q), (q*(j + 1) - 1)) = trans(w1.row(j));
   
    }
 
@@ -44,11 +44,11 @@ for(int j = 0; j < q; ++ j){
    for(int k = 0; k < m; ++ k){
       A11_diag.subvec((k*q), (q*(k + 1) - 1)) = A11_old;
       }
-   arma::vec eta_full = (delta_diag%A11_diag%w1_full);
+   arma::vec eta_full_old = (delta_diag%A11_diag%w1_full);
   
    arma::vec mean_piece_old = gamma - 
                               x*beta - 
-                              z*((kron(ident, Lambda))*eta_full);
+                              z*((kron(ident, Lambda))*eta_full_old);
 
    double second = -0.50*dot(mean_piece_old, w%mean_piece_old) - 
                    0.50*(1.00/sigma2_A)*(A11_trans_old*A11_trans_old);
@@ -74,7 +74,7 @@ for(int j = 0; j < q; ++ j){
    int acc = 1;
    if(ratio < R::runif(0.00, 1.00)){
      A11(j) = A11_old(j);
-     eta_full = (delta_diag%A11_diag%w1_full);
+     eta_full = eta_full_old;
      acc = 0;
      }
    acctot_A11_trans(j) = acctot_A11_trans(j) + 
