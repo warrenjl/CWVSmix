@@ -45,12 +45,12 @@ rcpp_pgdraw <- function(b, c) {
     .Call(`_CWVSmix_rcpp_pgdraw`, b, c)
 }
 
-temporal_corr_fun <- function(p_z, phi) {
-    .Call(`_CWVSmix_temporal_corr_fun`, p_z, phi)
-}
-
 rtnorm_gibbs <- function(n, mu, sigma, a, b) {
     .Call(`_CWVSmix_rtnorm_gibbs`, n, mu, sigma, a, b)
+}
+
+temporal_corr_fun <- function(p_z, phi) {
+    .Call(`_CWVSmix_temporal_corr_fun`, p_z, phi)
 }
 
 w1_update <- function(p, q, x, z, w, gamma, beta, Lambda, delta, delta_star, w2_old, A11_old, A22_old, A21_old, temporal_corr_info1) {

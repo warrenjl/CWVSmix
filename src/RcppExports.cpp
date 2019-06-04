@@ -230,18 +230,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// temporal_corr_fun
-Rcpp::List temporal_corr_fun(int p_z, double phi);
-RcppExport SEXP _CWVSmix_temporal_corr_fun(SEXP p_zSEXP, SEXP phiSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type p_z(p_zSEXP);
-    Rcpp::traits::input_parameter< double >::type phi(phiSEXP);
-    rcpp_result_gen = Rcpp::wrap(temporal_corr_fun(p_z, phi));
-    return rcpp_result_gen;
-END_RCPP
-}
 // rtnorm_gibbs
 arma::vec rtnorm_gibbs(int n, double mu, double sigma, double a, double b);
 RcppExport SEXP _CWVSmix_rtnorm_gibbs(SEXP nSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP aSEXP, SEXP bSEXP) {
@@ -254,6 +242,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type a(aSEXP);
     Rcpp::traits::input_parameter< double >::type b(bSEXP);
     rcpp_result_gen = Rcpp::wrap(rtnorm_gibbs(n, mu, sigma, a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// temporal_corr_fun
+Rcpp::List temporal_corr_fun(int p_z, double phi);
+RcppExport SEXP _CWVSmix_temporal_corr_fun(SEXP p_zSEXP, SEXP phiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type p_z(p_zSEXP);
+    Rcpp::traits::input_parameter< double >::type phi(phiSEXP);
+    rcpp_result_gen = Rcpp::wrap(temporal_corr_fun(p_z, phi));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -330,8 +330,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CWVSmix_neg_two_loglike_update", (DL_FUNC) &_CWVSmix_neg_two_loglike_update, 8},
     {"_CWVSmix_phi_update", (DL_FUNC) &_CWVSmix_phi_update, 7},
     {"_CWVSmix_rcpp_pgdraw", (DL_FUNC) &_CWVSmix_rcpp_pgdraw, 2},
-    {"_CWVSmix_temporal_corr_fun", (DL_FUNC) &_CWVSmix_temporal_corr_fun, 2},
     {"_CWVSmix_rtnorm_gibbs", (DL_FUNC) &_CWVSmix_rtnorm_gibbs, 5},
+    {"_CWVSmix_temporal_corr_fun", (DL_FUNC) &_CWVSmix_temporal_corr_fun, 2},
     {"_CWVSmix_w1_update", (DL_FUNC) &_CWVSmix_w1_update, 15},
     {"_CWVSmix_w2_update", (DL_FUNC) &_CWVSmix_w2_update, 7},
     {"_CWVSmix_w_update", (DL_FUNC) &_CWVSmix_w_update, 8},
