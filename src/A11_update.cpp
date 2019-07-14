@@ -38,11 +38,11 @@ arma::vec eta_full(m*q); eta_full.fill(0.00);
 for(int j = 0; j < q; ++ j){
   
    /*Second*/
-   double A11_trans_old = log(A11_old(j));
+   double A11_trans_old = log(A11(j));
   
    arma::vec A11_diag(m*q); A11_diag.fill(0.00);
    for(int k = 0; k < m; ++ k){
-      A11_diag.subvec((k*q), (q*(k + 1) - 1)) = A11_old;
+      A11_diag.subvec((k*q), (q*(k + 1) - 1)) = A11;
       }
    arma::vec eta_full_old = (delta_diag%A11_diag%w1_full);
   
@@ -73,9 +73,11 @@ for(int j = 0; j < q; ++ j){
    double ratio = exp(first - second);   
    int acc = 1;
    if(ratio < R::runif(0.00, 1.00)){
+     
      A11(j) = A11_old(j);
      eta_full = eta_full_old;
      acc = 0;
+     
      }
    acctot_A11_trans(j) = acctot_A11_trans(j) + 
                          acc;

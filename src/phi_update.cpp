@@ -45,9 +45,11 @@ double first = -0.50*log_deter -
 double ratio = exp(first - second);   
 int acc = 1;
 if(ratio < R::runif(0.00, 1.00)){
+  
   phi = phi_old;
   temporal_corr_info = temporal_corr_info_old;
   acc = 0;
+  
   }
 acctot_phi_trans = acctot_phi_trans + 
                    acc;

@@ -40,8 +40,10 @@ double first = -0.50*dot(mean_piece, mean_piece) -
 double ratio = exp(first - second);   
 int acc = 1;
 if(ratio < R::runif(0.00, 1.00)){
+  
   A22 = A22_old;
   acc = 0;
+  
   }
 acctot_A22_trans = acctot_A22_trans + 
                    acc;

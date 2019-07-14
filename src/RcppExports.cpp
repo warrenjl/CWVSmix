@@ -183,6 +183,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// exp_rs
+double exp_rs(double a, double b);
+RcppExport SEXP _CWVSmix_exp_rs(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(exp_rs(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// half_norm_rs
+double half_norm_rs(double a, double b);
+RcppExport SEXP _CWVSmix_half_norm_rs(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(half_norm_rs(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
 // neg_two_loglike_update
 double neg_two_loglike_update(int p, int q, arma::vec y, arma::mat x, arma::mat z, arma::vec beta, arma::mat Lambda, arma::vec eta_full);
 RcppExport SEXP _CWVSmix_neg_two_loglike_update(SEXP pSEXP, SEXP qSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP betaSEXP, SEXP LambdaSEXP, SEXP eta_fullSEXP) {
@@ -198,6 +222,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type Lambda(LambdaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type eta_full(eta_fullSEXP);
     rcpp_result_gen = Rcpp::wrap(neg_two_loglike_update(p, q, y, x, z, beta, Lambda, eta_full));
+    return rcpp_result_gen;
+END_RCPP
+}
+// norm_rs
+double norm_rs(double a, double b);
+RcppExport SEXP _CWVSmix_norm_rs(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(norm_rs(a, b));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -230,18 +266,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rtnorm_gibbs
-arma::vec rtnorm_gibbs(int n, double mu, double sigma, double a, double b);
-RcppExport SEXP _CWVSmix_rtnorm_gibbs(SEXP nSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP aSEXP, SEXP bSEXP) {
+// rnorm_trunc
+double rnorm_trunc(double mu, double sigma, double lower, double upper);
+RcppExport SEXP _CWVSmix_rnorm_trunc(SEXP muSEXP, SEXP sigmaSEXP, SEXP lowerSEXP, SEXP upperSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< double >::type mu(muSEXP);
     Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< double >::type a(aSEXP);
-    Rcpp::traits::input_parameter< double >::type b(bSEXP);
-    rcpp_result_gen = Rcpp::wrap(rtnorm_gibbs(n, mu, sigma, a, b));
+    Rcpp::traits::input_parameter< double >::type lower(lowerSEXP);
+    Rcpp::traits::input_parameter< double >::type upper(upperSEXP);
+    rcpp_result_gen = Rcpp::wrap(rnorm_trunc(mu, sigma, lower, upper));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -254,6 +289,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type p_z(p_zSEXP);
     Rcpp::traits::input_parameter< double >::type phi(phiSEXP);
     rcpp_result_gen = Rcpp::wrap(temporal_corr_fun(p_z, phi));
+    return rcpp_result_gen;
+END_RCPP
+}
+// unif_rs
+double unif_rs(double a, double b);
+RcppExport SEXP _CWVSmix_unif_rs(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(unif_rs(a, b));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -327,11 +374,15 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CWVSmix_beta_update", (DL_FUNC) &_CWVSmix_beta_update, 9},
     {"_CWVSmix_delta_star_update", (DL_FUNC) &_CWVSmix_delta_star_update, 5},
     {"_CWVSmix_delta_update", (DL_FUNC) &_CWVSmix_delta_update, 15},
+    {"_CWVSmix_exp_rs", (DL_FUNC) &_CWVSmix_exp_rs, 2},
+    {"_CWVSmix_half_norm_rs", (DL_FUNC) &_CWVSmix_half_norm_rs, 2},
     {"_CWVSmix_neg_two_loglike_update", (DL_FUNC) &_CWVSmix_neg_two_loglike_update, 8},
+    {"_CWVSmix_norm_rs", (DL_FUNC) &_CWVSmix_norm_rs, 2},
     {"_CWVSmix_phi_update", (DL_FUNC) &_CWVSmix_phi_update, 7},
     {"_CWVSmix_rcpp_pgdraw", (DL_FUNC) &_CWVSmix_rcpp_pgdraw, 2},
-    {"_CWVSmix_rtnorm_gibbs", (DL_FUNC) &_CWVSmix_rtnorm_gibbs, 5},
+    {"_CWVSmix_rnorm_trunc", (DL_FUNC) &_CWVSmix_rnorm_trunc, 4},
     {"_CWVSmix_temporal_corr_fun", (DL_FUNC) &_CWVSmix_temporal_corr_fun, 2},
+    {"_CWVSmix_unif_rs", (DL_FUNC) &_CWVSmix_unif_rs, 2},
     {"_CWVSmix_w1_update", (DL_FUNC) &_CWVSmix_w1_update, 15},
     {"_CWVSmix_w2_update", (DL_FUNC) &_CWVSmix_w2_update, 7},
     {"_CWVSmix_w_update", (DL_FUNC) &_CWVSmix_w_update, 8},

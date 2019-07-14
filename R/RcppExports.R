@@ -33,8 +33,20 @@ delta_update <- function(delta_old, p, q, y, x, z, w, gamma, beta, Lambda, w1_ol
     .Call(`_CWVSmix_delta_update`, delta_old, p, q, y, x, z, w, gamma, beta, Lambda, w1_old, w2_old, A11_old, A22_old, A21_old)
 }
 
+exp_rs <- function(a, b) {
+    .Call(`_CWVSmix_exp_rs`, a, b)
+}
+
+half_norm_rs <- function(a, b) {
+    .Call(`_CWVSmix_half_norm_rs`, a, b)
+}
+
 neg_two_loglike_update <- function(p, q, y, x, z, beta, Lambda, eta_full) {
     .Call(`_CWVSmix_neg_two_loglike_update`, p, q, y, x, z, beta, Lambda, eta_full)
+}
+
+norm_rs <- function(a, b) {
+    .Call(`_CWVSmix_norm_rs`, a, b)
 }
 
 phi_update <- function(phi_old, alpha_phi, beta_phi, w, temporal_corr_info, metrop_var_phi_trans, acctot_phi_trans) {
@@ -45,12 +57,16 @@ rcpp_pgdraw <- function(b, c) {
     .Call(`_CWVSmix_rcpp_pgdraw`, b, c)
 }
 
-rtnorm_gibbs <- function(n, mu, sigma, a, b) {
-    .Call(`_CWVSmix_rtnorm_gibbs`, n, mu, sigma, a, b)
+rnorm_trunc <- function(mu, sigma, lower, upper) {
+    .Call(`_CWVSmix_rnorm_trunc`, mu, sigma, lower, upper)
 }
 
 temporal_corr_fun <- function(p_z, phi) {
     .Call(`_CWVSmix_temporal_corr_fun`, p_z, phi)
+}
+
+unif_rs <- function(a, b) {
+    .Call(`_CWVSmix_unif_rs`, a, b)
 }
 
 w1_update <- function(p, q, x, z, w, gamma, beta, Lambda, delta, delta_star, w2_old, A11_old, A22_old, A21_old, temporal_corr_info1) {

@@ -23,22 +23,20 @@ for(int j = 0; j < q; ++ j){
    for(int k = 0; k < m; ++ k){
    
       if(delta(k,j) == 1.00){
-        delta_star(k,j) = rtnorm_gibbs(1, 
-                                       alpha(k), 
-                                       1.00,
-                                       0.00, 
-                                       arma::math::inf())(0);
+        delta_star(k,j) = rnorm_trunc(alpha(k),
+                                      1.00,
+                                      0.00,
+                                      datum::inf);
         }
    
       //All Other
       if(j > 0){
         
         if((delta(k,j) == 0.00) & (sum(delta.col(j - 1)) > 0.00)){
-          delta_star(k,j) = rtnorm_gibbs(1, 
-                                         alpha(k), 
-                                         1.00,
-                                         -arma::math::inf(),
-                                         0.00)(0);
+          delta_star(k,j) = rnorm_trunc(alpha(k),
+                                        1.00,
+                                        -datum::inf,
+                                        0.00);
           }
       
         if((delta(k,j) == 0.00) & (sum(delta.col(j - 1)) == 0.00)){
@@ -52,11 +50,10 @@ for(int j = 0; j < q; ++ j){
       if(j == 0){
         
         if(delta(k,j) == 0.00){
-          delta_star(k,j) = rtnorm_gibbs(1, 
-                                         alpha(k), 
-                                         1.00,
-                                         -arma::math::inf(),
-                                         0.00)(0);
+          delta_star(k,j) = rnorm_trunc(alpha(k),
+                                        1.00,
+                                        -datum::inf,
+                                        0.00);
           }
         
         }

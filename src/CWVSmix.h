@@ -1,14 +1,25 @@
 #ifndef __CWVSmix__
 #define __CWVSmix__
 
+double rnorm_trunc(double mu, 
+                   double sigma, 
+                   double lower, 
+                   double upper);
+
+double norm_rs(double a, 
+               double b);
+
+double half_norm_rs(double a, 
+                    double b);
+
+double unif_rs(double a, 
+               double b);
+
+double exp_rs(double a, 
+              double b);
+
 arma::vec rcpp_pgdraw(double b, 
                       arma::vec c);
-
-arma::vec rtnorm_gibbs(int n, 
-                       double mu, 
-                       double sigma, 
-                       double a, 
-                       double b);
 
 Rcpp::List temporal_corr_fun(int p_z,
                              double phi);

@@ -45,6 +45,7 @@ Rcpp::List Lambda(mcmc_samples);
 Rcpp::List delta(mcmc_samples);
 Rcpp::List w1(mcmc_samples);
 Rcpp::List w2(mcmc_samples);
+Rcpp::List eta(mcmc_samples);
 for(int j = 0; j < mcmc_samples; ++ j){
   
    arma::mat Lambda_temp(p, q); Lambda_temp.fill(0.00);
@@ -58,6 +59,9 @@ for(int j = 0; j < mcmc_samples; ++ j){
    
    arma::mat w2_temp(m, q); w2_temp.fill(0.00);
    w2[j] = w2_temp;
+   
+   arma::mat eta_temp(m, q); eta_temp.fill(0.00);
+   eta[j] = eta_temp;
   
    }
 arma::mat A11(q, mcmc_samples); A11.fill(0.00);
@@ -120,7 +124,7 @@ if(Lambda_init.isNotNull()){
   }
 Lambda[0] = Lambda_temp;
 
-arma::mat delta_temp(m, q); delta_temp.fill(1.00);
+arma::mat delta_temp(m, q); delta_temp.fill(0.00); delta_temp.col(0).fill(1.00);
 if(delta_init.isNotNull()){
   delta_temp = Rcpp::as<arma::mat>(delta_init);
   }
@@ -197,6 +201,16 @@ neg_two_loglike(0) = neg_two_loglike_update(p,
                                             beta.col(0),
                                             Lambda[0],
                                             eta_full);
+
+arma::mat eta_temp(m, q); eta_temp.fill(0.00);
+for(int j = 0; j < q; ++ j){
+  
+   arma::vec subset = regspace(j, q, ((m*q) - 1));
+   arma::uvec subset_final = conv_to<arma::uvec>::from(subset);
+   eta_temp.col(j) = eta_full.elem(subset_final);
+  
+ }
+eta[0] = eta_temp;
 
 //Metropolis Settings
 arma::vec acctot_Lambda(q); acctot_Lambda.fill(0);
@@ -360,10 +374,10 @@ for(int j = 1; j < mcmc_samples; ++ j){
       }
    
    //A21 Update
+   w1_temp = Rcpp::as<arma::mat>(w1[j]);
+   w2_temp = Rcpp::as<arma::mat>(w2[j]);
    for(int k = 0; k < q; ++ k){
      
-      arma::mat w1_temp = w1[k];
-      arma::mat w2_temp = w2[k];
       A21(k,j) = A21_update(sigma2_A,
                             delta_star.col(k),
                             w1_temp.col(k),
@@ -391,6 +405,7 @@ for(int j = 1; j < mcmc_samples; ++ j){
       }
    
    //phi2 Update
+   w2_temp = Rcpp::as<arma::mat>(w2[j]);
    for(int k = 0; k < q; ++ k){
      
       arma::mat w2_temp = w2[j];
@@ -417,6 +432,17 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                                beta.col(j),
                                                Lambda[j],
                                                eta_full);
+   
+   //eta Update
+   arma::mat eta_temp(m, q); eta_temp.fill(0.00);
+   for(int j = 0; j < q; ++ j){
+     
+     arma::vec subset = regspace(j, q, ((m*q) - 1));
+     arma::uvec subset_final = conv_to<arma::uvec>::from(subset);
+     eta_temp.col(j) = eta_full.elem(subset_final);
+     
+     }
+   eta[j] = eta_temp;
    
    //Progress
    if((j + 1) % 10 == 0){ 
@@ -504,6 +530,7 @@ return Rcpp::List::create(Rcpp::Named("beta") = beta,
                           Rcpp::Named("acctot_A11_trans") = acctot_A11_trans,
                           Rcpp::Named("acctot_A22_trans") = acctot_A22_trans,
                           Rcpp::Named("acctot_phi1_trans") = acctot_phi1_trans,
-                          Rcpp::Named("acctot_phi2_trans") = acctot_phi2_trans);
+                          Rcpp::Named("acctot_phi2_trans") = acctot_phi2_trans,
+                          Rcpp::Named("eta") = eta);
 
 }

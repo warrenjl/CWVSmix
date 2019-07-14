@@ -27,13 +27,11 @@ arma::mat ident(m, m); ident.eye();
 
 arma::vec delta_diag(m*q); delta_diag.fill(0.00); 
 arma::vec w1_full(m*q); w1_full.fill(0.00);
-arma::vec w2_full(m*q); w2_full.fill(0.00);
 arma::vec A11_diag(m*q); A11_diag.fill(0.00);
 for(int j = 0; j < m; ++ j){
     
    delta_diag.subvec((j*q), (q*(j + 1) - 1)) = trans(delta_old.row(j));
    w1_full.subvec((j*q), (q*(j + 1) - 1)) = trans(w1_old.row(j));
-   w2_full.subvec((j*q), (q*(j + 1) - 1)) = trans(w2_old.row(j));
    A11_diag.subvec((j*q), (q*(j + 1) - 1)) = A11_old;
     
    }
@@ -57,70 +55,113 @@ for(int j = 0; j < q; ++ j){
    }
 
 arma::vec pieces(2); pieces.fill(0.00);
-arma::vec log_pi(2); log_pi.fill(0.00);
+double log_pi = 0.00;
 arma::vec probs(2);
 
-int counter = (m*q) - 1;
-for(int j = (q - 1); j > -1; -- j){
+for(int j = 0; j < q; ++ j){
 
-   for(int k = (m - 1); k > -1; -- k){
+   for(int k = 0; k < m; ++ k){
+     
+      int counter = q*k + j;
 
       pieces.fill(0.00);
-      
-      //Middle
-      if((j > 0) & (j < (q - 1))){
-        
-        log_pi(0) = log(1.00 - (sum(delta.col(j - 1)) > 0.00)*pi(k,j)) +
-                    sum((1.00 - delta.col(j + 1))%log(1.00 - (sum(delta.col(j)) > 0.00)*pi.col(j + 1))) +
-                    sum(delta.col(j + 1))*log(sum(delta.col(j)) > 0.00);
-        
-        log_pi(1) = log((sum(delta.col(j - 1)) > 0.00)*pi(k,j)) + 
-                    sum((1.00 - delta.col(j + 1))%log(1.00 - pi.col(j + 1)));
-        
-        }
-      
-      //Start, q > 1
-      if((j == 0) & (q > 1)){
-        
-        log_pi(0) = log(1.00 - pi(k,j)) +
-                    sum((1.00 - delta.col(j + 1))%log(1.00 - (sum(delta.col(j)) > 0.00)*pi.col(j + 1))) +
-                    sum(delta.col(j + 1))*log(sum(delta.col(j)) > 0.00);
-        
-        log_pi(1) = log(pi(k,j)) + 
-                    sum((1.00 - delta.col(j + 1))%log(1.00 - pi.col(j + 1)));
-        
-        }
-      
-      //q=1
-      if(q == 1){
-        
-        log_pi(0) = log(1.00 - pi(k,j));
-        
-        log_pi(1) = log(pi(k,j));
-        
-        }
-      
-      //End, q > 1
-      if((j == (q - 1)) & (q > 1)){
-        
-        log_pi(0) = log(1.00 - (sum(delta.col(j - 1)) > 0.00)*pi(k,j));
-        
-        log_pi(1) = log((sum(delta.col(j - 1)) > 0.00)*pi(k,j));
-        
-        }
-   
       for(int l = 0; l < 2; ++ l){
-     
+       
+         delta(k,j) = l;
          delta_diag(counter) = l;
          eta_full = (delta_diag%A11_diag%w1_full);
+         
+         if(l == 0){
+       
+           //Middle
+           if((j > 0) & (j < (q - 1))){
+             
+             arma::vec temp = trans(delta.submat(k, 0, k, (j - 1)));
+             log_pi = log(1.00 - pi(k,j)*prod(1.00 - temp)); 
+             
+             for(int t = (j + 1); t < q; ++ t){
+               
+                arma::vec temp = trans(delta.submat(k, 0, k, (t - 1)));
+                log_pi = log_pi +
+                         log(pow((pi(k,t)*prod(1.00 - temp)), delta(k,t))*pow((1 - pi(k,t)*prod(1.00 - temp)), (1.00 - delta(k,t)))); 
+               
+                }
+             
+             }
+      
+           //Start, q > 1
+           if((j == 0) & (q > 1)){
+             
+             log_pi = log(1.00 - pi(k,j));
+             for(int t = (j + 1); t < q; ++ t){
+               
+                arma::vec temp = trans(delta.submat(k, 0, k, (t - 1)));
+               
+                log_pi = log_pi +
+                         log(pow((pi(k,t)*prod(1.00 - temp)), delta(k,t))*pow((1.00 - pi(k,t)*prod(1.00 - temp)), (1.00 - delta(k,t)))); 
+                
+                }
+             
+             }
+           
+           //q=1
+           if(q == 1){
+             log_pi = log(1.00 - pi(k,j));
+             }
+      
+           //End, q > 1
+           if((j == (q - 1)) & (q > 1)){
+             
+             arma::vec temp = trans(delta.submat(k, 0, k, (j - 1)));
+             log_pi = log(1.00 - prod(1.00 - temp)*pi(k,j));
+             
+             }
+           
+           }
+         
+         
+         
+         if(l == 1){
+           
+           //Middle
+           if((j > 0) & (j < (q - 1))){
+             
+             arma::vec temp1 = trans(delta.submat(k, 0, k, (j - 1)));
+             arma::vec temp2 = trans(delta.submat(k, (j + 1), k, (q - 1)));
+             log_pi = log(prod(1.00 - temp1)*pi(k,j)*prod(1.00 - temp2));
+             
+             }
+           
+           //Start, q > 1
+           if((j == 0) & (q > 1)){
+             
+             arma::vec temp = trans(delta.submat(k, (j + 1), k, (q - 1)));
+             log_pi = log(pi(k,j)*prod(1.00 - temp));
+             
+             }
+           
+           //q=1
+           if(q == 1){
+             log_pi = log(pi(k,j));
+             }
+           
+           //End, q > 1
+           if((j == (q - 1)) & (q > 1)){
+             
+             arma::vec temp = trans(delta.submat(k, 0, k, (j - 1)));
+             log_pi = log(prod(1.00 - temp)*pi(k,j));
+             
+             }
+           
+           }
+   
          pieces(l) = -0.50*dot((gamma - x*beta - z*((kron(ident, Lambda))*eta_full)), w%(gamma - x*beta - z*((kron(ident, Lambda))*eta_full))) +
-                     log_pi(l);
+                     log_pi;
       
          }
 
       probs.fill(0.00);
-
-      for(int l = 0; l < 2; ++l){
+      for(int l = 0; l < 2; ++ l){
      
          probs(l) = 1.00/(sum(exp(pieces - pieces(l))));
   
@@ -129,12 +170,11 @@ for(int j = (q - 1); j > -1; -- j){
            }
       
          }
-
+      
       delta_diag(counter) = as<double>(Rcpp::rbinom(1,
                                                     1,
                                                     probs(1)));
       delta(k,j) = delta_diag(counter);
-      -- counter;
       
       }
   

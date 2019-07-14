@@ -81,9 +81,11 @@ arma::vec eta_full = (delta_diag%A11_diag%w1_full);
 
 arma::mat w1(m, q); w1.fill(0.00);
 for(int j = 0; j < q; ++ j){
+  
    arma::vec subset = regspace(j, q, ((m*q) - 1));
    arma::uvec subset_final = conv_to<arma::uvec>::from(subset);
    w1.col(j) = w1_full.elem(subset_final);
+   
    }
 
 return Rcpp::List::create(Rcpp::Named("w1") = w1,
