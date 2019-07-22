@@ -6,42 +6,43 @@ using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 
-arma::mat delta_star_update(arma::mat delta,
-                            arma::mat w1_old,
-                            arma::mat w2_old,
-                            arma::vec A22_old,
-                            arma::vec A21_old){
+arma::mat delta_star_update(int q,
+                            int m,
+                            arma::mat delta,
+                            arma::vec w1_old,
+                            arma::vec w2_old,
+                            double A22_old,
+                            double A21_old){
   
-int q = delta.n_cols;
-int m = delta.n_rows;
 arma::mat delta_star(m, q); delta_star.fill(0.00);
+
+arma::vec alpha = A21_old*w1_old +
+                  A22_old*w2_old;
+
 for(int j = 0; j < q; ++ j){
-  
-   arma::vec alpha = A21_old(j)*w1_old.col(j) +
-                     A22_old(j)*w2_old.col(j);
   
    for(int k = 0; k < m; ++ k){
    
-      if(delta(k,j) == 1.00){
-        delta_star(k,j) = rnorm_trunc(alpha(k),
-                                      1.00,
-                                      0.00,
-                                      datum::inf);
+      if(delta(k, j) == 1.00){
+        delta_star(k, j) = rnorm_trunc(alpha(k),
+                                       1.00,
+                                       0.00,
+                                       datum::inf);
         }
    
       //All Other
       if(j > 0){
         
-        if((delta(k,j) == 0.00) & (sum(delta.col(j - 1)) > 0.00)){
-          delta_star(k,j) = rnorm_trunc(alpha(k),
-                                        1.00,
-                                        -datum::inf,
-                                        0.00);
+        if((delta(k, j) == 0.00) & (sum(delta.row(k).subvec(0, (j - 1))) > 0.00)){
+          delta_star(k, j) = R::rnorm(alpha(k),
+                                      sqrt(1.00));
           }
       
-        if((delta(k,j) == 0.00) & (sum(delta.col(j - 1)) == 0.00)){
-          delta_star(k,j) = R::rnorm(alpha(k),
-                                     sqrt(1.00));
+        if((delta(k, j) == 0.00) & (sum(delta.row(k).subvec(0, (j - 1))) == 0.00)){
+          delta_star(k, j) = rnorm_trunc(alpha(k),
+                                         1.00,
+                                         -datum::inf,
+                                         0.00);
           }
         
         }
@@ -49,11 +50,11 @@ for(int j = 0; j < q; ++ j){
       //Start
       if(j == 0){
         
-        if(delta(k,j) == 0.00){
-          delta_star(k,j) = rnorm_trunc(alpha(k),
-                                        1.00,
-                                        -datum::inf,
-                                        0.00);
+        if(delta(k, j) == 0.00){
+          delta_star(k, j) = rnorm_trunc(alpha(k),
+                                         1.00,
+                                         -datum::inf,
+                                         0.00);
           }
         
         }

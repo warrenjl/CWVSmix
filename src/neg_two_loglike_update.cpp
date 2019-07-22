@@ -6,8 +6,10 @@ using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 
-double neg_two_loglike_update(int p,
+double neg_two_loglike_update(int n,
+                              int p,
                               int q,
+                              int m,
                               arma::vec y,
                               arma::mat x,
                               arma::mat z, 
@@ -15,8 +17,6 @@ double neg_two_loglike_update(int p,
                               arma::mat Lambda,
                               arma::vec eta_full){
 
-int n = y.size();
-int m = z.n_cols/p;  
 arma::mat ident(m, m); ident.eye();
 arma::vec dens(n); dens.fill(0.00);
 

@@ -7,6 +7,7 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 
 Rcpp::List phi_update(double phi_old,
+                      int m,
                       double alpha_phi,
                       double beta_phi,
                       arma::vec w,
@@ -14,8 +15,6 @@ Rcpp::List phi_update(double phi_old,
                       double metrop_var_phi_trans,
                       int acctot_phi_trans){
   
-int m = w.size();
-
 /*Second*/
 Rcpp::List temporal_corr_info_old = temporal_corr_info;
 arma::mat corr_inv_old = temporal_corr_info_old[0];

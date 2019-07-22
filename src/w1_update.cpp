@@ -6,8 +6,10 @@ using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 
-Rcpp::List w1_update(int p,
+Rcpp::List w1_update(int n,
+                     int p,
                      int q,
+                     int m,
                      arma::mat x,
                      arma::mat z,
                      arma::vec w,
@@ -16,76 +18,50 @@ Rcpp::List w1_update(int p,
                      arma::mat Lambda,
                      arma::mat delta,
                      arma::mat delta_star,
-                     arma::mat w2_old,
-                     arma::vec A11_old,
-                     arma::vec A22_old,
-                     arma::vec A21_old,
-                     Rcpp::List temporal_corr_info1){
+                     arma::vec w2_old,
+                     double A11_old,
+                     double A22_old,
+                     double A21_old,
+                     arma::mat corr_inv1){
 
-int m = z.n_cols/p;
 arma::mat ident(m, m); ident.eye();
-int n = w.size();
-
-arma::vec delta_diag(m*q); delta_diag.fill(0.00); 
-arma::vec delta_star_diag(m*q); delta_star_diag.fill(0.00); 
-arma::vec w2_full(m*q); w2_full.fill(0.00);
-arma::vec A11_diag(m*q); A11_diag.fill(0.00);
-arma::vec A22_diag(m*q); A22_diag.fill(0.00);
-arma::vec A21_diag(m*q); A21_diag.fill(0.00);
-for(int j = 0; j < m; ++ j){
+arma::vec delta_star_piece(m); delta_star_piece.fill(0.00); 
+for(int j = 0; j < q; ++ j){
   
-   delta_diag.subvec((j*q), (q*(j + 1) - 1)) = trans(delta.row(j));
-   delta_star_diag.subvec((j*q), (q*(j + 1) - 1)) = trans(delta_star.row(j));
-   w2_full.subvec((j*q), (q*(j + 1) - 1)) = trans(w2_old.row(j));
-   A11_diag.subvec((j*q), (q*(j + 1) - 1)) = A11_old;
-   A22_diag.subvec((j*q), (q*(j + 1) - 1)) = A22_old;
-   A21_diag.subvec((j*q), (q*(j + 1) - 1)) = A21_old;
+   delta_star_piece = delta_star_piece +
+                      (delta_star.col(j) - A22_old*w2_old);
    
    }
 
-arma::mat Sigma0_inv((m*q), (m*q)); Sigma0_inv.fill(0.00);
-for(int j = 0; j < q; ++ j){
-  
-   Rcpp::List temporal_corr_info1_temp = temporal_corr_info1[j];
-   Sigma0_inv.submat((j*m), (j*m), (m*(j + 1) - 1), (m*(j + 1) - 1)) = Rcpp::as<arma::mat>(temporal_corr_info1_temp[0]);
-  
-   }
-arma::vec sort_set(m*q); sort_set.fill(0.00);
+arma::mat delta_diag(m*q, m); delta_diag.fill(0.00); 
 for(int j = 0; j < m; ++ j){
-   sort_set.subvec((j*q), (q*(j + 1) - 1)) = regspace(j, m, ((q*m) - 1));
-   }
+  
+  delta_diag.col(j).subvec((j*q), (q*(j + 1) - 1)) = trans(delta.row(j));
+  
+  }
 
-arma::uvec sort_set_final = conv_to<arma::uvec>::from(sort_set);
-arma::mat Sigma1_inv = Sigma0_inv.submat(sort_set_final, sort_set_final);
-
-arma::mat cov_piece = z*kron(ident, Lambda)*diagmat(delta_diag%A11_diag);
+arma::mat cov_piece = A11_old*z*kron(ident, Lambda)*delta_diag;
 arma::mat cov_piece_trans = trans(cov_piece);
 
-arma::mat w_mat(n, (m*q));
-for(int j = 0; j < (m*q); ++j){
+arma::mat w_mat(n, m);
+for(int j = 0; j < m; ++j){
    w_mat.col(j) = w;
    }
 
 arma::mat cov_w1 = inv_sympd(cov_piece_trans*(w_mat%cov_piece) + 
-                             diagmat(A21_diag%A21_diag) + 
-                             Sigma1_inv);
+                             A21_old*A21_old*q*ident + 
+                             corr_inv1);
 
 arma::vec mean_w1 = cov_w1*(cov_piece_trans*(w%(gamma - x*beta)) + 
-                            diagmat(A21_diag)*(delta_star_diag - A22_diag%w2_full));
+                            A21_old*delta_star_piece);
 
-arma::mat ind_norms = arma::randn(1, (m*q));
-arma::vec w1_full = mean_w1 +                   
-                    trans(ind_norms*arma::chol(cov_w1));
+arma::mat ind_norms = arma::randn(1, m);
+arma::vec w1 = mean_w1 +                   
+               trans(ind_norms*arma::chol(cov_w1));
 
-arma::vec eta_full = (delta_diag%A11_diag%w1_full);
-
-arma::mat w1(m, q); w1.fill(0.00);
-for(int j = 0; j < q; ++ j){
-  
-   arma::vec subset = regspace(j, q, ((m*q) - 1));
-   arma::uvec subset_final = conv_to<arma::uvec>::from(subset);
-   w1.col(j) = w1_full.elem(subset_final);
-   
+arma::vec eta_full(m*q); eta_full.fill(0.00); 
+for(int j = 0; j < m; ++ j){
+   eta_full.subvec((j*q), (q*(j + 1) - 1)) = A11_old*w1(j)*trans(delta.row(j));
    }
 
 return Rcpp::List::create(Rcpp::Named("w1") = w1,

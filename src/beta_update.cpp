@@ -6,8 +6,11 @@ using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 
-arma::vec beta_update(int p,
+arma::vec beta_update(int n,
+                      int p,
                       int q,
+                      int m,
+                      int p_x,
                       arma::mat x, 
                       arma::mat z,
                       double sigma2_beta,
@@ -16,10 +19,7 @@ arma::vec beta_update(int p,
                       arma::mat Lambda_old,
                       arma::vec eta_full){
 
-int m = z.n_cols/p;  
 arma::mat ident(m, m); ident.eye();
-int p_x = x.n_cols;
-int n = w.size();
 arma::mat w_mat(n, p_x);
 for(int j = 0; j < p_x; ++ j){
    w_mat.col(j) = w;

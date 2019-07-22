@@ -8,6 +8,7 @@ using namespace Rcpp;
 
 Rcpp::List w_update(int p,
                     int q,
+                    int m,
                     arma::vec y,
                     arma::mat x,
                     arma::mat z,
@@ -15,7 +16,6 @@ Rcpp::List w_update(int p,
                     arma::mat Lambda_old,
                     arma::vec eta_full){
   
-int m = z.n_cols/p;  
 arma::mat ident(m, m); ident.eye();
 
 arma::vec mean_w = x*beta_old + 

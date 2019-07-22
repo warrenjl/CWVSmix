@@ -7,14 +7,15 @@
 using namespace Rcpp;
 
 // A11_update
-Rcpp::List A11_update(arma::vec A11_old, int p, int q, arma::mat x, arma::mat z, double sigma2_A, arma::vec w, arma::vec gamma, arma::vec beta, arma::mat Lambda, arma::mat delta, arma::mat w1, arma::vec metrop_var_A11_trans, arma::vec acctot_A11_trans);
-RcppExport SEXP _CWVSmix_A11_update(SEXP A11_oldSEXP, SEXP pSEXP, SEXP qSEXP, SEXP xSEXP, SEXP zSEXP, SEXP sigma2_ASEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP LambdaSEXP, SEXP deltaSEXP, SEXP w1SEXP, SEXP metrop_var_A11_transSEXP, SEXP acctot_A11_transSEXP) {
+Rcpp::List A11_update(double A11_old, int p, int q, int m, arma::mat x, arma::mat z, double sigma2_A, arma::vec w, arma::vec gamma, arma::vec beta, arma::mat Lambda, arma::mat delta, arma::vec w1, double metrop_var_A11_trans, int acctot_A11_trans);
+RcppExport SEXP _CWVSmix_A11_update(SEXP A11_oldSEXP, SEXP pSEXP, SEXP qSEXP, SEXP mSEXP, SEXP xSEXP, SEXP zSEXP, SEXP sigma2_ASEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP LambdaSEXP, SEXP deltaSEXP, SEXP w1SEXP, SEXP metrop_var_A11_transSEXP, SEXP acctot_A11_transSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type A11_old(A11_oldSEXP);
+    Rcpp::traits::input_parameter< double >::type A11_old(A11_oldSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
     Rcpp::traits::input_parameter< double >::type sigma2_A(sigma2_ASEXP);
@@ -23,48 +24,51 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Lambda(LambdaSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type delta(deltaSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type w1(w1SEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type metrop_var_A11_trans(metrop_var_A11_transSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type acctot_A11_trans(acctot_A11_transSEXP);
-    rcpp_result_gen = Rcpp::wrap(A11_update(A11_old, p, q, x, z, sigma2_A, w, gamma, beta, Lambda, delta, w1, metrop_var_A11_trans, acctot_A11_trans));
+    Rcpp::traits::input_parameter< arma::vec >::type w1(w1SEXP);
+    Rcpp::traits::input_parameter< double >::type metrop_var_A11_trans(metrop_var_A11_transSEXP);
+    Rcpp::traits::input_parameter< int >::type acctot_A11_trans(acctot_A11_transSEXP);
+    rcpp_result_gen = Rcpp::wrap(A11_update(A11_old, p, q, m, x, z, sigma2_A, w, gamma, beta, Lambda, delta, w1, metrop_var_A11_trans, acctot_A11_trans));
     return rcpp_result_gen;
 END_RCPP
 }
 // A21_update
-double A21_update(double sigma2_A, arma::vec delta_star, arma::vec w1, arma::vec w2, double A22);
-RcppExport SEXP _CWVSmix_A21_update(SEXP sigma2_ASEXP, SEXP delta_starSEXP, SEXP w1SEXP, SEXP w2SEXP, SEXP A22SEXP) {
+double A21_update(int q, double sigma2_A, arma::mat delta_star, arma::vec w1, arma::vec w2, double A22);
+RcppExport SEXP _CWVSmix_A21_update(SEXP qSEXP, SEXP sigma2_ASEXP, SEXP delta_starSEXP, SEXP w1SEXP, SEXP w2SEXP, SEXP A22SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
     Rcpp::traits::input_parameter< double >::type sigma2_A(sigma2_ASEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type delta_star(delta_starSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type delta_star(delta_starSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type w1(w1SEXP);
     Rcpp::traits::input_parameter< arma::vec >::type w2(w2SEXP);
     Rcpp::traits::input_parameter< double >::type A22(A22SEXP);
-    rcpp_result_gen = Rcpp::wrap(A21_update(sigma2_A, delta_star, w1, w2, A22));
+    rcpp_result_gen = Rcpp::wrap(A21_update(q, sigma2_A, delta_star, w1, w2, A22));
     return rcpp_result_gen;
 END_RCPP
 }
 // A22_update
-Rcpp::List A22_update(double A22_old, double sigma2_A, arma::vec delta_star, arma::vec w1, arma::vec w2, double A21_old, double metrop_var_A22_trans, int acctot_A22_trans);
-RcppExport SEXP _CWVSmix_A22_update(SEXP A22_oldSEXP, SEXP sigma2_ASEXP, SEXP delta_starSEXP, SEXP w1SEXP, SEXP w2SEXP, SEXP A21_oldSEXP, SEXP metrop_var_A22_transSEXP, SEXP acctot_A22_transSEXP) {
+Rcpp::List A22_update(double A22_old, int q, int m, double sigma2_A, arma::mat delta_star, arma::vec w1, arma::vec w2, double A21_old, double metrop_var_A22_trans, int acctot_A22_trans);
+RcppExport SEXP _CWVSmix_A22_update(SEXP A22_oldSEXP, SEXP qSEXP, SEXP mSEXP, SEXP sigma2_ASEXP, SEXP delta_starSEXP, SEXP w1SEXP, SEXP w2SEXP, SEXP A21_oldSEXP, SEXP metrop_var_A22_transSEXP, SEXP acctot_A22_transSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type A22_old(A22_oldSEXP);
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< double >::type sigma2_A(sigma2_ASEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type delta_star(delta_starSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type delta_star(delta_starSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type w1(w1SEXP);
     Rcpp::traits::input_parameter< arma::vec >::type w2(w2SEXP);
     Rcpp::traits::input_parameter< double >::type A21_old(A21_oldSEXP);
     Rcpp::traits::input_parameter< double >::type metrop_var_A22_trans(metrop_var_A22_transSEXP);
     Rcpp::traits::input_parameter< int >::type acctot_A22_trans(acctot_A22_transSEXP);
-    rcpp_result_gen = Rcpp::wrap(A22_update(A22_old, sigma2_A, delta_star, w1, w2, A21_old, metrop_var_A22_trans, acctot_A22_trans));
+    rcpp_result_gen = Rcpp::wrap(A22_update(A22_old, q, m, sigma2_A, delta_star, w1, w2, A21_old, metrop_var_A22_trans, acctot_A22_trans));
     return rcpp_result_gen;
 END_RCPP
 }
 // CWVSmix
-Rcpp::List CWVSmix(int mcmc_samples, int p, int q, arma::vec y, arma::mat x, arma::mat z, arma::vec mh_scale_Lambda, arma::vec metrop_var_A11_trans, arma::vec metrop_var_A22_trans, arma::vec metrop_var_phi1_trans, arma::vec metrop_var_phi2_trans, Rcpp::Nullable<double> sigma2_beta_prior, Rcpp::Nullable<double> alpha_Lambda_prior, Rcpp::Nullable<double> sigma2_A_prior, Rcpp::Nullable<double> alpha_phi1_prior, Rcpp::Nullable<double> beta_phi1_prior, Rcpp::Nullable<double> alpha_phi2_prior, Rcpp::Nullable<double> beta_phi2_prior, Rcpp::Nullable<Rcpp::NumericVector> beta_init, Rcpp::Nullable<Rcpp::NumericMatrix> Lambda_init, Rcpp::Nullable<Rcpp::NumericMatrix> delta_init, Rcpp::Nullable<Rcpp::NumericMatrix> w1_init, Rcpp::Nullable<Rcpp::NumericMatrix> w2_init, Rcpp::Nullable<Rcpp::NumericVector> A11_init, Rcpp::Nullable<Rcpp::NumericVector> A22_init, Rcpp::Nullable<Rcpp::NumericVector> A21_init, Rcpp::Nullable<Rcpp::NumericVector> phi1_init, Rcpp::Nullable<Rcpp::NumericVector> phi2_init);
+Rcpp::List CWVSmix(int mcmc_samples, int p, int q, arma::vec y, arma::mat x, arma::mat z, arma::vec mh_scale_Lambda, double metrop_var_A11_trans, double metrop_var_A22_trans, double metrop_var_phi1_trans, double metrop_var_phi2_trans, Rcpp::Nullable<double> sigma2_beta_prior, Rcpp::Nullable<double> alpha_Lambda_prior, Rcpp::Nullable<double> sigma2_A_prior, Rcpp::Nullable<double> alpha_phi1_prior, Rcpp::Nullable<double> beta_phi1_prior, Rcpp::Nullable<double> alpha_phi2_prior, Rcpp::Nullable<double> beta_phi2_prior, Rcpp::Nullable<Rcpp::NumericVector> beta_init, Rcpp::Nullable<Rcpp::NumericMatrix> Lambda_init, Rcpp::Nullable<Rcpp::NumericMatrix> delta_init, Rcpp::Nullable<Rcpp::NumericVector> w1_init, Rcpp::Nullable<Rcpp::NumericVector> w2_init, Rcpp::Nullable<double> A11_init, Rcpp::Nullable<double> A22_init, Rcpp::Nullable<double> A21_init, Rcpp::Nullable<double> phi1_init, Rcpp::Nullable<double> phi2_init);
 RcppExport SEXP _CWVSmix_CWVSmix(SEXP mcmc_samplesSEXP, SEXP pSEXP, SEXP qSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP mh_scale_LambdaSEXP, SEXP metrop_var_A11_transSEXP, SEXP metrop_var_A22_transSEXP, SEXP metrop_var_phi1_transSEXP, SEXP metrop_var_phi2_transSEXP, SEXP sigma2_beta_priorSEXP, SEXP alpha_Lambda_priorSEXP, SEXP sigma2_A_priorSEXP, SEXP alpha_phi1_priorSEXP, SEXP beta_phi1_priorSEXP, SEXP alpha_phi2_priorSEXP, SEXP beta_phi2_priorSEXP, SEXP beta_initSEXP, SEXP Lambda_initSEXP, SEXP delta_initSEXP, SEXP w1_initSEXP, SEXP w2_initSEXP, SEXP A11_initSEXP, SEXP A22_initSEXP, SEXP A21_initSEXP, SEXP phi1_initSEXP, SEXP phi2_initSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -76,10 +80,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type mh_scale_Lambda(mh_scale_LambdaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type metrop_var_A11_trans(metrop_var_A11_transSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type metrop_var_A22_trans(metrop_var_A22_transSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type metrop_var_phi1_trans(metrop_var_phi1_transSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type metrop_var_phi2_trans(metrop_var_phi2_transSEXP);
+    Rcpp::traits::input_parameter< double >::type metrop_var_A11_trans(metrop_var_A11_transSEXP);
+    Rcpp::traits::input_parameter< double >::type metrop_var_A22_trans(metrop_var_A22_transSEXP);
+    Rcpp::traits::input_parameter< double >::type metrop_var_phi1_trans(metrop_var_phi1_transSEXP);
+    Rcpp::traits::input_parameter< double >::type metrop_var_phi2_trans(metrop_var_phi2_transSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type sigma2_beta_prior(sigma2_beta_priorSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type alpha_Lambda_prior(alpha_Lambda_priorSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type sigma2_A_prior(sigma2_A_priorSEXP);
@@ -90,20 +94,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type beta_init(beta_initSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericMatrix> >::type Lambda_init(Lambda_initSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericMatrix> >::type delta_init(delta_initSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericMatrix> >::type w1_init(w1_initSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericMatrix> >::type w2_init(w2_initSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type A11_init(A11_initSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type A22_init(A22_initSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type A21_init(A21_initSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type phi1_init(phi1_initSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type phi2_init(phi2_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type w1_init(w1_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type w2_init(w2_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type A11_init(A11_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type A22_init(A22_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type A21_init(A21_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type phi1_init(phi1_initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type phi2_init(phi2_initSEXP);
     rcpp_result_gen = Rcpp::wrap(CWVSmix(mcmc_samples, p, q, y, x, z, mh_scale_Lambda, metrop_var_A11_trans, metrop_var_A22_trans, metrop_var_phi1_trans, metrop_var_phi2_trans, sigma2_beta_prior, alpha_Lambda_prior, sigma2_A_prior, alpha_phi1_prior, beta_phi1_prior, alpha_phi2_prior, beta_phi2_prior, beta_init, Lambda_init, delta_init, w1_init, w2_init, A11_init, A22_init, A21_init, phi1_init, phi2_init));
     return rcpp_result_gen;
 END_RCPP
 }
 // Lambda_update
-Rcpp::List Lambda_update(arma::mat Lambda_old, int ind, int p, int q, arma::mat x, arma::mat z, double alpha_Lambda, arma::vec w, arma::vec gamma, arma::vec beta, arma::vec eta_full, double metrop_scale_Lambda, int acctot_Lambda);
-RcppExport SEXP _CWVSmix_Lambda_update(SEXP Lambda_oldSEXP, SEXP indSEXP, SEXP pSEXP, SEXP qSEXP, SEXP xSEXP, SEXP zSEXP, SEXP alpha_LambdaSEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP eta_fullSEXP, SEXP metrop_scale_LambdaSEXP, SEXP acctot_LambdaSEXP) {
+Rcpp::List Lambda_update(arma::mat Lambda_old, int ind, int p, int q, int m, arma::mat x, arma::mat z, double alpha_Lambda, arma::vec w, arma::vec gamma, arma::vec beta, arma::vec eta_full, double metrop_scale_Lambda, int acctot_Lambda);
+RcppExport SEXP _CWVSmix_Lambda_update(SEXP Lambda_oldSEXP, SEXP indSEXP, SEXP pSEXP, SEXP qSEXP, SEXP mSEXP, SEXP xSEXP, SEXP zSEXP, SEXP alpha_LambdaSEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP eta_fullSEXP, SEXP metrop_scale_LambdaSEXP, SEXP acctot_LambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -111,6 +115,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type ind(indSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
     Rcpp::traits::input_parameter< double >::type alpha_Lambda(alpha_LambdaSEXP);
@@ -120,18 +125,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type eta_full(eta_fullSEXP);
     Rcpp::traits::input_parameter< double >::type metrop_scale_Lambda(metrop_scale_LambdaSEXP);
     Rcpp::traits::input_parameter< int >::type acctot_Lambda(acctot_LambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(Lambda_update(Lambda_old, ind, p, q, x, z, alpha_Lambda, w, gamma, beta, eta_full, metrop_scale_Lambda, acctot_Lambda));
+    rcpp_result_gen = Rcpp::wrap(Lambda_update(Lambda_old, ind, p, q, m, x, z, alpha_Lambda, w, gamma, beta, eta_full, metrop_scale_Lambda, acctot_Lambda));
     return rcpp_result_gen;
 END_RCPP
 }
 // beta_update
-arma::vec beta_update(int p, int q, arma::mat x, arma::mat z, double sigma2_beta, arma::vec w, arma::vec gamma, arma::mat Lambda_old, arma::vec eta_full);
-RcppExport SEXP _CWVSmix_beta_update(SEXP pSEXP, SEXP qSEXP, SEXP xSEXP, SEXP zSEXP, SEXP sigma2_betaSEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP Lambda_oldSEXP, SEXP eta_fullSEXP) {
+arma::vec beta_update(int n, int p, int q, int m, int p_x, arma::mat x, arma::mat z, double sigma2_beta, arma::vec w, arma::vec gamma, arma::mat Lambda_old, arma::vec eta_full);
+RcppExport SEXP _CWVSmix_beta_update(SEXP nSEXP, SEXP pSEXP, SEXP qSEXP, SEXP mSEXP, SEXP p_xSEXP, SEXP xSEXP, SEXP zSEXP, SEXP sigma2_betaSEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP Lambda_oldSEXP, SEXP eta_fullSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type p_x(p_xSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
     Rcpp::traits::input_parameter< double >::type sigma2_beta(sigma2_betaSEXP);
@@ -139,34 +147,37 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Lambda_old(Lambda_oldSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type eta_full(eta_fullSEXP);
-    rcpp_result_gen = Rcpp::wrap(beta_update(p, q, x, z, sigma2_beta, w, gamma, Lambda_old, eta_full));
+    rcpp_result_gen = Rcpp::wrap(beta_update(n, p, q, m, p_x, x, z, sigma2_beta, w, gamma, Lambda_old, eta_full));
     return rcpp_result_gen;
 END_RCPP
 }
 // delta_star_update
-arma::mat delta_star_update(arma::mat delta, arma::mat w1_old, arma::mat w2_old, arma::vec A22_old, arma::vec A21_old);
-RcppExport SEXP _CWVSmix_delta_star_update(SEXP deltaSEXP, SEXP w1_oldSEXP, SEXP w2_oldSEXP, SEXP A22_oldSEXP, SEXP A21_oldSEXP) {
+arma::mat delta_star_update(int q, int m, arma::mat delta, arma::vec w1_old, arma::vec w2_old, double A22_old, double A21_old);
+RcppExport SEXP _CWVSmix_delta_star_update(SEXP qSEXP, SEXP mSEXP, SEXP deltaSEXP, SEXP w1_oldSEXP, SEXP w2_oldSEXP, SEXP A22_oldSEXP, SEXP A21_oldSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type delta(deltaSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type w1_old(w1_oldSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type w2_old(w2_oldSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type A22_old(A22_oldSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type A21_old(A21_oldSEXP);
-    rcpp_result_gen = Rcpp::wrap(delta_star_update(delta, w1_old, w2_old, A22_old, A21_old));
+    Rcpp::traits::input_parameter< arma::vec >::type w1_old(w1_oldSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type w2_old(w2_oldSEXP);
+    Rcpp::traits::input_parameter< double >::type A22_old(A22_oldSEXP);
+    Rcpp::traits::input_parameter< double >::type A21_old(A21_oldSEXP);
+    rcpp_result_gen = Rcpp::wrap(delta_star_update(q, m, delta, w1_old, w2_old, A22_old, A21_old));
     return rcpp_result_gen;
 END_RCPP
 }
 // delta_update
-Rcpp::List delta_update(arma::mat delta_old, int p, int q, arma::vec y, arma::mat x, arma::mat z, arma::vec w, arma::vec gamma, arma::vec beta, arma::mat Lambda, arma::mat w1_old, arma::mat w2_old, arma::vec A11_old, arma::vec A22_old, arma::vec A21_old);
-RcppExport SEXP _CWVSmix_delta_update(SEXP delta_oldSEXP, SEXP pSEXP, SEXP qSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP LambdaSEXP, SEXP w1_oldSEXP, SEXP w2_oldSEXP, SEXP A11_oldSEXP, SEXP A22_oldSEXP, SEXP A21_oldSEXP) {
+Rcpp::List delta_update(arma::mat delta_old, int p, int q, int m, arma::vec y, arma::mat x, arma::mat z, arma::vec w, arma::vec gamma, arma::vec beta, arma::mat Lambda, arma::vec w1_old, arma::vec w2_old, double A11_old, double A22_old, double A21_old);
+RcppExport SEXP _CWVSmix_delta_update(SEXP delta_oldSEXP, SEXP pSEXP, SEXP qSEXP, SEXP mSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP LambdaSEXP, SEXP w1_oldSEXP, SEXP w2_oldSEXP, SEXP A11_oldSEXP, SEXP A22_oldSEXP, SEXP A21_oldSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type delta_old(delta_oldSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
     Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
@@ -174,12 +185,12 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Lambda(LambdaSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type w1_old(w1_oldSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type w2_old(w2_oldSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type A11_old(A11_oldSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type A22_old(A22_oldSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type A21_old(A21_oldSEXP);
-    rcpp_result_gen = Rcpp::wrap(delta_update(delta_old, p, q, y, x, z, w, gamma, beta, Lambda, w1_old, w2_old, A11_old, A22_old, A21_old));
+    Rcpp::traits::input_parameter< arma::vec >::type w1_old(w1_oldSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type w2_old(w2_oldSEXP);
+    Rcpp::traits::input_parameter< double >::type A11_old(A11_oldSEXP);
+    Rcpp::traits::input_parameter< double >::type A22_old(A22_oldSEXP);
+    Rcpp::traits::input_parameter< double >::type A21_old(A21_oldSEXP);
+    rcpp_result_gen = Rcpp::wrap(delta_update(delta_old, p, q, m, y, x, z, w, gamma, beta, Lambda, w1_old, w2_old, A11_old, A22_old, A21_old));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -208,20 +219,22 @@ BEGIN_RCPP
 END_RCPP
 }
 // neg_two_loglike_update
-double neg_two_loglike_update(int p, int q, arma::vec y, arma::mat x, arma::mat z, arma::vec beta, arma::mat Lambda, arma::vec eta_full);
-RcppExport SEXP _CWVSmix_neg_two_loglike_update(SEXP pSEXP, SEXP qSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP betaSEXP, SEXP LambdaSEXP, SEXP eta_fullSEXP) {
+double neg_two_loglike_update(int n, int p, int q, int m, arma::vec y, arma::mat x, arma::mat z, arma::vec beta, arma::mat Lambda, arma::vec eta_full);
+RcppExport SEXP _CWVSmix_neg_two_loglike_update(SEXP nSEXP, SEXP pSEXP, SEXP qSEXP, SEXP mSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP betaSEXP, SEXP LambdaSEXP, SEXP eta_fullSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
     Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Lambda(LambdaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type eta_full(eta_fullSEXP);
-    rcpp_result_gen = Rcpp::wrap(neg_two_loglike_update(p, q, y, x, z, beta, Lambda, eta_full));
+    rcpp_result_gen = Rcpp::wrap(neg_two_loglike_update(n, p, q, m, y, x, z, beta, Lambda, eta_full));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -238,19 +251,20 @@ BEGIN_RCPP
 END_RCPP
 }
 // phi_update
-Rcpp::List phi_update(double phi_old, double alpha_phi, double beta_phi, arma::vec w, Rcpp::List temporal_corr_info, double metrop_var_phi_trans, int acctot_phi_trans);
-RcppExport SEXP _CWVSmix_phi_update(SEXP phi_oldSEXP, SEXP alpha_phiSEXP, SEXP beta_phiSEXP, SEXP wSEXP, SEXP temporal_corr_infoSEXP, SEXP metrop_var_phi_transSEXP, SEXP acctot_phi_transSEXP) {
+Rcpp::List phi_update(double phi_old, int m, double alpha_phi, double beta_phi, arma::vec w, Rcpp::List temporal_corr_info, double metrop_var_phi_trans, int acctot_phi_trans);
+RcppExport SEXP _CWVSmix_phi_update(SEXP phi_oldSEXP, SEXP mSEXP, SEXP alpha_phiSEXP, SEXP beta_phiSEXP, SEXP wSEXP, SEXP temporal_corr_infoSEXP, SEXP metrop_var_phi_transSEXP, SEXP acctot_phi_transSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type phi_old(phi_oldSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< double >::type alpha_phi(alpha_phiSEXP);
     Rcpp::traits::input_parameter< double >::type beta_phi(beta_phiSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type w(wSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type temporal_corr_info(temporal_corr_infoSEXP);
     Rcpp::traits::input_parameter< double >::type metrop_var_phi_trans(metrop_var_phi_transSEXP);
     Rcpp::traits::input_parameter< int >::type acctot_phi_trans(acctot_phi_transSEXP);
-    rcpp_result_gen = Rcpp::wrap(phi_update(phi_old, alpha_phi, beta_phi, w, temporal_corr_info, metrop_var_phi_trans, acctot_phi_trans));
+    rcpp_result_gen = Rcpp::wrap(phi_update(phi_old, m, alpha_phi, beta_phi, w, temporal_corr_info, metrop_var_phi_trans, acctot_phi_trans));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -305,13 +319,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // w1_update
-Rcpp::List w1_update(int p, int q, arma::mat x, arma::mat z, arma::vec w, arma::vec gamma, arma::vec beta, arma::mat Lambda, arma::mat delta, arma::mat delta_star, arma::mat w2_old, arma::vec A11_old, arma::vec A22_old, arma::vec A21_old, Rcpp::List temporal_corr_info1);
-RcppExport SEXP _CWVSmix_w1_update(SEXP pSEXP, SEXP qSEXP, SEXP xSEXP, SEXP zSEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP LambdaSEXP, SEXP deltaSEXP, SEXP delta_starSEXP, SEXP w2_oldSEXP, SEXP A11_oldSEXP, SEXP A22_oldSEXP, SEXP A21_oldSEXP, SEXP temporal_corr_info1SEXP) {
+Rcpp::List w1_update(int n, int p, int q, int m, arma::mat x, arma::mat z, arma::vec w, arma::vec gamma, arma::vec beta, arma::mat Lambda, arma::mat delta, arma::mat delta_star, arma::vec w2_old, double A11_old, double A22_old, double A21_old, arma::mat corr_inv1);
+RcppExport SEXP _CWVSmix_w1_update(SEXP nSEXP, SEXP pSEXP, SEXP qSEXP, SEXP mSEXP, SEXP xSEXP, SEXP zSEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP LambdaSEXP, SEXP deltaSEXP, SEXP delta_starSEXP, SEXP w2_oldSEXP, SEXP A11_oldSEXP, SEXP A22_oldSEXP, SEXP A21_oldSEXP, SEXP corr_inv1SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type w(wSEXP);
@@ -320,72 +336,75 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type Lambda(LambdaSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type delta(deltaSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type delta_star(delta_starSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type w2_old(w2_oldSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type A11_old(A11_oldSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type A22_old(A22_oldSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type A21_old(A21_oldSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type temporal_corr_info1(temporal_corr_info1SEXP);
-    rcpp_result_gen = Rcpp::wrap(w1_update(p, q, x, z, w, gamma, beta, Lambda, delta, delta_star, w2_old, A11_old, A22_old, A21_old, temporal_corr_info1));
+    Rcpp::traits::input_parameter< arma::vec >::type w2_old(w2_oldSEXP);
+    Rcpp::traits::input_parameter< double >::type A11_old(A11_oldSEXP);
+    Rcpp::traits::input_parameter< double >::type A22_old(A22_oldSEXP);
+    Rcpp::traits::input_parameter< double >::type A21_old(A21_oldSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type corr_inv1(corr_inv1SEXP);
+    rcpp_result_gen = Rcpp::wrap(w1_update(n, p, q, m, x, z, w, gamma, beta, Lambda, delta, delta_star, w2_old, A11_old, A22_old, A21_old, corr_inv1));
     return rcpp_result_gen;
 END_RCPP
 }
 // w2_update
-arma::vec w2_update(int p, arma::mat z, arma::vec delta_star, arma::vec w1, double A22_old, double A21_old, arma::mat corr_inv2);
-RcppExport SEXP _CWVSmix_w2_update(SEXP pSEXP, SEXP zSEXP, SEXP delta_starSEXP, SEXP w1SEXP, SEXP A22_oldSEXP, SEXP A21_oldSEXP, SEXP corr_inv2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type delta_star(delta_starSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type w1(w1SEXP);
-    Rcpp::traits::input_parameter< double >::type A22_old(A22_oldSEXP);
-    Rcpp::traits::input_parameter< double >::type A21_old(A21_oldSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type corr_inv2(corr_inv2SEXP);
-    rcpp_result_gen = Rcpp::wrap(w2_update(p, z, delta_star, w1, A22_old, A21_old, corr_inv2));
-    return rcpp_result_gen;
-END_RCPP
-}
-// w_update
-Rcpp::List w_update(int p, int q, arma::vec y, arma::mat x, arma::mat z, arma::vec beta_old, arma::mat Lambda_old, arma::vec eta_full);
-RcppExport SEXP _CWVSmix_w_update(SEXP pSEXP, SEXP qSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP beta_oldSEXP, SEXP Lambda_oldSEXP, SEXP eta_fullSEXP) {
+arma::vec w2_update(int p, int q, int m, arma::mat z, arma::mat delta_star, arma::vec w1, double A22_old, double A21_old, arma::mat corr_inv2);
+RcppExport SEXP _CWVSmix_w2_update(SEXP pSEXP, SEXP qSEXP, SEXP mSEXP, SEXP zSEXP, SEXP delta_starSEXP, SEXP w1SEXP, SEXP A22_oldSEXP, SEXP A21_oldSEXP, SEXP corr_inv2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type delta_star(delta_starSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type w1(w1SEXP);
+    Rcpp::traits::input_parameter< double >::type A22_old(A22_oldSEXP);
+    Rcpp::traits::input_parameter< double >::type A21_old(A21_oldSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type corr_inv2(corr_inv2SEXP);
+    rcpp_result_gen = Rcpp::wrap(w2_update(p, q, m, z, delta_star, w1, A22_old, A21_old, corr_inv2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// w_update
+Rcpp::List w_update(int p, int q, int m, arma::vec y, arma::mat x, arma::mat z, arma::vec beta_old, arma::mat Lambda_old, arma::vec eta_full);
+RcppExport SEXP _CWVSmix_w_update(SEXP pSEXP, SEXP qSEXP, SEXP mSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP beta_oldSEXP, SEXP Lambda_oldSEXP, SEXP eta_fullSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
     Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type beta_old(beta_oldSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Lambda_old(Lambda_oldSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type eta_full(eta_fullSEXP);
-    rcpp_result_gen = Rcpp::wrap(w_update(p, q, y, x, z, beta_old, Lambda_old, eta_full));
+    rcpp_result_gen = Rcpp::wrap(w_update(p, q, m, y, x, z, beta_old, Lambda_old, eta_full));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_CWVSmix_A11_update", (DL_FUNC) &_CWVSmix_A11_update, 14},
-    {"_CWVSmix_A21_update", (DL_FUNC) &_CWVSmix_A21_update, 5},
-    {"_CWVSmix_A22_update", (DL_FUNC) &_CWVSmix_A22_update, 8},
+    {"_CWVSmix_A11_update", (DL_FUNC) &_CWVSmix_A11_update, 15},
+    {"_CWVSmix_A21_update", (DL_FUNC) &_CWVSmix_A21_update, 6},
+    {"_CWVSmix_A22_update", (DL_FUNC) &_CWVSmix_A22_update, 10},
     {"_CWVSmix_CWVSmix", (DL_FUNC) &_CWVSmix_CWVSmix, 28},
-    {"_CWVSmix_Lambda_update", (DL_FUNC) &_CWVSmix_Lambda_update, 13},
-    {"_CWVSmix_beta_update", (DL_FUNC) &_CWVSmix_beta_update, 9},
-    {"_CWVSmix_delta_star_update", (DL_FUNC) &_CWVSmix_delta_star_update, 5},
-    {"_CWVSmix_delta_update", (DL_FUNC) &_CWVSmix_delta_update, 15},
+    {"_CWVSmix_Lambda_update", (DL_FUNC) &_CWVSmix_Lambda_update, 14},
+    {"_CWVSmix_beta_update", (DL_FUNC) &_CWVSmix_beta_update, 12},
+    {"_CWVSmix_delta_star_update", (DL_FUNC) &_CWVSmix_delta_star_update, 7},
+    {"_CWVSmix_delta_update", (DL_FUNC) &_CWVSmix_delta_update, 16},
     {"_CWVSmix_exp_rs", (DL_FUNC) &_CWVSmix_exp_rs, 2},
     {"_CWVSmix_half_norm_rs", (DL_FUNC) &_CWVSmix_half_norm_rs, 2},
-    {"_CWVSmix_neg_two_loglike_update", (DL_FUNC) &_CWVSmix_neg_two_loglike_update, 8},
+    {"_CWVSmix_neg_two_loglike_update", (DL_FUNC) &_CWVSmix_neg_two_loglike_update, 10},
     {"_CWVSmix_norm_rs", (DL_FUNC) &_CWVSmix_norm_rs, 2},
-    {"_CWVSmix_phi_update", (DL_FUNC) &_CWVSmix_phi_update, 7},
+    {"_CWVSmix_phi_update", (DL_FUNC) &_CWVSmix_phi_update, 8},
     {"_CWVSmix_rcpp_pgdraw", (DL_FUNC) &_CWVSmix_rcpp_pgdraw, 2},
     {"_CWVSmix_rnorm_trunc", (DL_FUNC) &_CWVSmix_rnorm_trunc, 4},
     {"_CWVSmix_temporal_corr_fun", (DL_FUNC) &_CWVSmix_temporal_corr_fun, 2},
     {"_CWVSmix_unif_rs", (DL_FUNC) &_CWVSmix_unif_rs, 2},
-    {"_CWVSmix_w1_update", (DL_FUNC) &_CWVSmix_w1_update, 15},
-    {"_CWVSmix_w2_update", (DL_FUNC) &_CWVSmix_w2_update, 7},
-    {"_CWVSmix_w_update", (DL_FUNC) &_CWVSmix_w_update, 8},
+    {"_CWVSmix_w1_update", (DL_FUNC) &_CWVSmix_w1_update, 17},
+    {"_CWVSmix_w2_update", (DL_FUNC) &_CWVSmix_w2_update, 9},
+    {"_CWVSmix_w_update", (DL_FUNC) &_CWVSmix_w_update, 9},
     {NULL, NULL, 0}
 };
 

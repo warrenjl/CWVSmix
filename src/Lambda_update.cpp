@@ -10,6 +10,7 @@ Rcpp::List Lambda_update(arma::mat Lambda_old,
                          int ind,
                          int p,
                          int q,
+                         int m,
                          arma::mat x,
                          arma::mat z,
                          double alpha_Lambda,
@@ -20,7 +21,6 @@ Rcpp::List Lambda_update(arma::mat Lambda_old,
                          double metrop_scale_Lambda,
                          int acctot_Lambda){
   
-int m = z.n_cols/p;  
 arma::mat ident(m, m); ident.eye();
 double epsilon = 0.01;
 
