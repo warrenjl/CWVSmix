@@ -36,8 +36,8 @@ arma::vec mean_piece_old = gamma -
                            x*beta - 
                            z*((kron(ident, Lambda))*eta_full_old);
 
-double second = -0.50*dot(mean_piece_old, w%mean_piece_old) - 
-                0.50*(1.00/sigma2_A)*(A11_trans_old*A11_trans_old);
+double second = -0.50*dot(mean_piece_old, w%mean_piece_old) + 
+                -0.50*(1.00/sigma2_A)*(A11_trans_old*A11_trans_old);
 
 /*First*/
 double A11_trans = R::rnorm(A11_trans_old, 
@@ -49,8 +49,8 @@ arma::vec mean_piece = gamma -
                        x*beta - 
                        z*((kron(ident, Lambda))*eta_full);
 
-double first = -0.50*dot(mean_piece, w%mean_piece) - 
-               0.50*(1.00/sigma2_A)*(A11_trans*A11_trans);
+double first = -0.50*dot(mean_piece, w%mean_piece) + 
+               -0.50*(1.00/sigma2_A)*(A11_trans*A11_trans);
 
 /*Decision*/
 double ratio = exp(first - second);   

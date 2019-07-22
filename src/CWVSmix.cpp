@@ -12,13 +12,12 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    arma::vec y,
                    arma::mat x,
                    arma::mat z,
-                   arma::vec mh_scale_Lambda,
+                   arma::mat mh_scale_Lambda,
                    double metrop_var_A11_trans,
                    double metrop_var_A22_trans,
                    double metrop_var_phi1_trans,
                    double metrop_var_phi2_trans,
                    Rcpp::Nullable<double> sigma2_beta_prior = R_NilValue,
-                   Rcpp::Nullable<double> alpha_Lambda_prior = R_NilValue,
                    Rcpp::Nullable<double> sigma2_A_prior = R_NilValue,
                    Rcpp::Nullable<double> alpha_phi1_prior = R_NilValue,
                    Rcpp::Nullable<double> beta_phi1_prior = R_NilValue,
@@ -68,11 +67,6 @@ if(sigma2_beta_prior.isNotNull()){
   sigma2_beta = Rcpp::as<double>(sigma2_beta_prior);
   }
 
-double alpha_Lambda = 0.10;
-if(alpha_Lambda_prior.isNotNull()){
-  alpha_Lambda = Rcpp::as<double>(alpha_Lambda_prior);
-  }
-
 double sigma2_A = 1.00;
 if(sigma2_A_prior.isNotNull()){
   sigma2_A = Rcpp::as<double>(sigma2_A_prior);
@@ -107,13 +101,27 @@ if(beta_init.isNotNull()){
 arma::mat Lambda_temp(p, q); Lambda_temp.fill(0.00);
 for(int j = 0; j < q; ++ j){
    for(int k = j; k < p; ++ k){
-     Lambda_temp(k, j) = (1.00/(p - j));
-     }
+      Lambda_temp(k, j) = (1.00/(p - j));
+      }
    }
 if(Lambda_init.isNotNull()){
   Lambda_temp = Rcpp::as<arma::mat>(Lambda_init);
   }
 Lambda[0] = Lambda_temp;
+arma::mat stick(p, q); stick.fill(1.00);  //Last row must equal 1.00
+for(int j = 0; j < q; ++ j){
+   for(int k = j; k < (p - 1); ++ k){
+    
+      if(k == j){
+        stick(k, j) = Lambda_temp(k, j);
+        }
+    
+      if(k > j){
+        stick(k, j) = Lambda_temp(k, j)/prod(1 - stick.col(j).subvec(j, (k - 1)));
+        }
+    
+      }
+   }
 
 arma::mat delta_temp(m, q); delta_temp.fill(0.00); delta_temp.col(0).fill(1.00);
 if(delta_init.isNotNull()){
@@ -180,7 +188,8 @@ neg_two_loglike(0) = neg_two_loglike_update(n,
                                             eta_full);
 
 //Metropolis Settings
-arma::vec acctot_Lambda(q); acctot_Lambda.fill(0);
+arma::mat acctot_Lambda((p - 1), q); acctot_Lambda.fill(0);
+arma::vec acctot_Lambda_vec(q*p - q*(q + 1)/2); acctot_Lambda_vec.fill(0);
 int acctot_A11_trans = 0;
 int acctot_A22_trans = 0; 
 int acctot_phi1_trans = 0;
@@ -219,25 +228,29 @@ for(int j = 1; j < mcmc_samples; ++ j){
    
    //Lambda Update
    arma::mat Lambda_temp = Lambda[j-1];
+   int counter = 0;
    for(int k = 0; k < q; ++ k){
      
-      Rcpp::List Lambda_output = Lambda_update(Lambda_temp,
+      Rcpp::List Lambda_output = Lambda_update(stick.col(k),
+                                               Lambda_temp,
                                                k,
                                                p,
                                                q,
                                                m,
                                                x,
                                                z,
-                                               alpha_Lambda,
                                                w,
                                                gamma,
                                                beta.col(j),
                                                eta_full,
-                                               mh_scale_Lambda(k),
-                                               acctot_Lambda(k));
+                                               mh_scale_Lambda.col(k),
+                                               acctot_Lambda.col(k));
      
-      Lambda_temp.col(k) = Rcpp::as<arma::vec>(Lambda_output[0]);
-      acctot_Lambda(k) = Rcpp::as<int>(Lambda_output[1]);
+      stick.col(k) = Rcpp::as<arma::vec>(Lambda_output[0]);
+      Lambda_temp.col(k) = Rcpp::as<arma::vec>(Lambda_output[1]);
+      acctot_Lambda.col(k) = Rcpp::as<arma::vec>(Lambda_output[2]);
+      acctot_Lambda_vec.subvec((0 + counter), (p - 2 - k + counter)) = acctot_Lambda.col(k).subvec(k, (p - 2));
+      counter = counter + (p - k - 1);
      
       }
    Lambda[j] = Lambda_temp;
@@ -398,11 +411,11 @@ for(int j = 1; j < mcmc_samples; ++ j){
      
      double completion = round(100*((j + 1)/(double)mcmc_samples));
      Rcpp::Rcout << "Progress: " << completion << "%" << std::endl;
-    
-     if(q == 1){
+     
+     if((q == 1) & (p == 2)){
        
-       double accrate_Lambda = round(100*(min(acctot_Lambda)/(double)j));
-       Rcpp::Rcout << "Lambda Acceptance: " << accrate_Lambda << "%" << std::endl;
+       double accrate_Lambda_min = round(100*(min(acctot_Lambda_vec)/(double)j));
+       Rcpp::Rcout << "Lambda Acceptance: " << accrate_Lambda_min << "%" << std::endl;
        
        double accrate_A11_trans = round(100*(min(acctot_A11_trans)/(double)j));
        Rcpp::Rcout << "A11 Acceptance: " << accrate_A11_trans << "%" << std::endl;
@@ -415,17 +428,17 @@ for(int j = 1; j < mcmc_samples; ++ j){
        
        double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
        Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
-      
-       Rcpp::Rcout << "**********************" << std::endl;
-      
-       }
-    
-     if(q > 1){
        
-       double accrate_Lambda_min = round(100*(min(acctot_Lambda)/(double)j));
+       Rcpp::Rcout << "**********************" << std::endl;
+       
+     }
+    
+     if((q > 1) | (p > 2)){
+       
+       double accrate_Lambda_min = round(100*(min(acctot_Lambda_vec)/(double)j));
        Rcpp::Rcout << "Lambda Acceptance (min): " << accrate_Lambda_min << "%" << std::endl;
        
-       double accrate_Lambda_max = round(100*(max(acctot_Lambda)/(double)j));
+       double accrate_Lambda_max = round(100*(max(acctot_Lambda_vec)/(double)j));
        Rcpp::Rcout << "Lambda Acceptance (max): " << accrate_Lambda_max << "%" << std::endl;
        
        double accrate_A11_trans = round(100*(min(acctot_A11_trans)/(double)j));

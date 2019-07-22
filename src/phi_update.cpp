@@ -21,10 +21,10 @@ arma::mat corr_inv_old = temporal_corr_info_old[0];
 double log_deter_old = temporal_corr_info_old[1];
 double phi_trans_old = log(phi_old);
 
-double second = -0.50*log_deter_old - 
-                0.50*dot(w, (corr_inv_old*w)) + 
-                alpha_phi*phi_trans_old -
-                beta_phi*exp(phi_trans_old);
+double second = -0.50*log_deter_old + 
+                -0.50*dot(w, (corr_inv_old*w)) + 
+                alpha_phi*phi_trans_old +
+                -beta_phi*exp(phi_trans_old);
 
 /*First*/
 double phi_trans = R::rnorm(phi_trans_old, 
@@ -35,10 +35,10 @@ temporal_corr_info = temporal_corr_fun(m,
 arma::mat corr_inv = temporal_corr_info[0];
 double log_deter = temporal_corr_info[1];
 
-double first = -0.50*log_deter - 
-               0.50*dot(w, (corr_inv*w)) + 
-               alpha_phi*phi_trans -
-               beta_phi*exp(phi_trans);
+double first = -0.50*log_deter + 
+               -0.50*dot(w, (corr_inv*w)) + 
+               alpha_phi*phi_trans +
+               -beta_phi*exp(phi_trans);
 
 /*Decision*/
 double ratio = exp(first - second);   

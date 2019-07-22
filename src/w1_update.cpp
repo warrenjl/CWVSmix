@@ -27,17 +27,13 @@ Rcpp::List w1_update(int n,
 arma::mat ident(m, m); ident.eye();
 arma::vec delta_star_piece(m); delta_star_piece.fill(0.00); 
 for(int j = 0; j < q; ++ j){
-  
    delta_star_piece = delta_star_piece +
                       (delta_star.col(j) - A22_old*w2_old);
-   
    }
 
 arma::mat delta_diag(m*q, m); delta_diag.fill(0.00); 
 for(int j = 0; j < m; ++ j){
-  
   delta_diag.col(j).subvec((j*q), (q*(j + 1) - 1)) = trans(delta.row(j));
-  
   }
 
 arma::mat cov_piece = A11_old*z*kron(ident, Lambda)*delta_diag;
