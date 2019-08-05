@@ -13,8 +13,8 @@ A22_update <- function(A22_old, q, m, sigma2_A, delta_star, w1, w2, A21_old, met
     .Call(`_CWVSmix_A22_update`, A22_old, q, m, sigma2_A, delta_star, w1, w2, A21_old, metrop_var_A22_trans, acctot_A22_trans)
 }
 
-CWVSmix <- function(mcmc_samples, p, q, y, x, z, mh_scale_Lambda, metrop_var_A11_trans, metrop_var_A22_trans, metrop_var_phi1_trans, metrop_var_phi2_trans, sigma2_beta_prior = NULL, sigma2_A_prior = NULL, alpha_phi1_prior = NULL, beta_phi1_prior = NULL, alpha_phi2_prior = NULL, beta_phi2_prior = NULL, beta_init = NULL, Lambda_init = NULL, delta_init = NULL, w1_init = NULL, w2_init = NULL, A11_init = NULL, A22_init = NULL, A21_init = NULL, phi1_init = NULL, phi2_init = NULL) {
-    .Call(`_CWVSmix_CWVSmix`, mcmc_samples, p, q, y, x, z, mh_scale_Lambda, metrop_var_A11_trans, metrop_var_A22_trans, metrop_var_phi1_trans, metrop_var_phi2_trans, sigma2_beta_prior, sigma2_A_prior, alpha_phi1_prior, beta_phi1_prior, alpha_phi2_prior, beta_phi2_prior, beta_init, Lambda_init, delta_init, w1_init, w2_init, A11_init, A22_init, A21_init, phi1_init, phi2_init)
+CWVSmix <- function(mcmc_samples, p, q, y, x, z, metrop_scale_Lambda, metrop_var_A11_trans, metrop_var_A22_trans, metrop_var_phi1_trans, metrop_var_phi2_trans, sigma2_beta_prior = NULL, sigma2_A_prior = NULL, alpha_phi1_prior = NULL, beta_phi1_prior = NULL, alpha_phi2_prior = NULL, beta_phi2_prior = NULL, beta_init = NULL, Lambda_init = NULL, delta_init = NULL, w1_init = NULL, w2_init = NULL, A11_init = NULL, A22_init = NULL, A21_init = NULL, phi1_init = NULL, phi2_init = NULL) {
+    .Call(`_CWVSmix_CWVSmix`, mcmc_samples, p, q, y, x, z, metrop_scale_Lambda, metrop_var_A11_trans, metrop_var_A22_trans, metrop_var_phi1_trans, metrop_var_phi2_trans, sigma2_beta_prior, sigma2_A_prior, alpha_phi1_prior, beta_phi1_prior, alpha_phi2_prior, beta_phi2_prior, beta_init, Lambda_init, delta_init, w1_init, w2_init, A11_init, A22_init, A21_init, phi1_init, phi2_init)
 }
 
 Lambda_update <- function(stick, Lambda_old, ind, p, q, m, x, z, w, gamma, beta, eta_full, metrop_scale_Lambda, acctot_Lambda) {

@@ -12,7 +12,7 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    arma::vec y,
                    arma::mat x,
                    arma::mat z,
-                   arma::mat mh_scale_Lambda,
+                   arma::mat metrop_scale_Lambda,
                    double metrop_var_A11_trans,
                    double metrop_var_A22_trans,
                    double metrop_var_phi1_trans,
@@ -243,7 +243,7 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                                gamma,
                                                beta.col(j),
                                                eta_full,
-                                               mh_scale_Lambda.col(k),
+                                               metrop_scale_Lambda.col(k),
                                                acctot_Lambda.col(k));
      
       stick.col(k) = Rcpp::as<arma::vec>(Lambda_output[0]);
@@ -429,7 +429,7 @@ for(int j = 1; j < mcmc_samples; ++ j){
        double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
        Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
        
-       Rcpp::Rcout << "**********************" << std::endl;
+       Rcpp::Rcout << "***********************" << std::endl;
        
      }
     
@@ -453,7 +453,7 @@ for(int j = 1; j < mcmc_samples; ++ j){
        double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
        Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
       
-       Rcpp::Rcout << "****************************" << std::endl;
+       Rcpp::Rcout << "*****************************" << std::endl;
       
        }
     
