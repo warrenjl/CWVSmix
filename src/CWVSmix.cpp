@@ -77,7 +77,7 @@ if(alpha_phi1_prior.isNotNull()){
   alpha_phi1 = Rcpp::as<double>(alpha_phi1_prior);
   }
 
-double beta_phi1 = 10.00;
+double beta_phi1 = 1.00;
 if(beta_phi1_prior.isNotNull()){
   beta_phi1 = Rcpp::as<double>(beta_phi1_prior);
   }
@@ -87,7 +87,7 @@ if(alpha_phi2_prior.isNotNull()){
   alpha_phi2 = Rcpp::as<double>(alpha_phi2_prior);
   }
 
-double beta_phi2 = 10.00;
+double beta_phi2 = 1.00;
 if(beta_phi2_prior.isNotNull()){
   beta_phi2 = Rcpp::as<double>(beta_phi2_prior);
   }
