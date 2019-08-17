@@ -12,12 +12,13 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    arma::vec y,
                    arma::mat x,
                    arma::mat z,
-                   arma::mat metrop_scale_Lambda,
+                   arma::mat metrop_var_Lambda,
                    double metrop_var_A11_trans,
                    double metrop_var_A22_trans,
                    double metrop_var_phi1_trans,
                    double metrop_var_phi2_trans,
                    Rcpp::Nullable<double> sigma2_beta_prior = R_NilValue,
+                   Rcpp::Nullable<Rcpp::NumericMatrix> alpha_Lambda_prior = R_NilValue,
                    Rcpp::Nullable<double> sigma2_A_prior = R_NilValue,
                    Rcpp::Nullable<double> alpha_phi1_prior = R_NilValue,
                    Rcpp::Nullable<double> beta_phi1_prior = R_NilValue,
@@ -67,6 +68,16 @@ if(sigma2_beta_prior.isNotNull()){
   sigma2_beta = Rcpp::as<double>(sigma2_beta_prior);
   }
 
+arma::mat alpha_Lambda(p, q); alpha_Lambda.fill(0.00);
+for(int j = 0; j < q; ++ j){
+   for(int k = j; k < p; ++ k){
+      alpha_Lambda(k, j) = 1.00;
+      }
+   }
+if(alpha_Lambda_prior.isNotNull()){
+  alpha_Lambda = Rcpp::as<arma::mat>(alpha_Lambda_prior);
+  }
+
 double sigma2_A = 1.00;
 if(sigma2_A_prior.isNotNull()){
   sigma2_A = Rcpp::as<double>(sigma2_A_prior);
@@ -101,25 +112,17 @@ if(beta_init.isNotNull()){
 arma::mat Lambda_temp(p, q); Lambda_temp.fill(0.00);
 for(int j = 0; j < q; ++ j){
    for(int k = j; k < p; ++ k){
-      Lambda_temp(k, j) = (1.00/(p - j));
+      Lambda_temp(k, j) = alpha_Lambda(k, j)/sum(alpha_Lambda.col(j).subvec(j, (p - 1)));
       }
    }
 if(Lambda_init.isNotNull()){
   Lambda_temp = Rcpp::as<arma::mat>(Lambda_init);
   }
 Lambda[0] = Lambda_temp;
-arma::mat stick(p, q); stick.fill(1.00);  //Last row must equal 1.00
+arma::mat Lambda_star(p, q); Lambda_star.fill(0.00);
 for(int j = 0; j < q; ++ j){
-   for(int k = j; k < (p - 1); ++ k){
-    
-      if(k == j){
-        stick(k, j) = Lambda_temp(k, j);
-        }
-    
-      if(k > j){
-        stick(k, j) = Lambda_temp(k, j)/prod(1 - stick.col(j).subvec(j, (k - 1)));
-        }
-    
+   for(int k = j; k < p; ++ k){
+      Lambda_star(k, j) = Lambda_temp(k, j);
       }
    }
 
@@ -188,8 +191,8 @@ neg_two_loglike(0) = neg_two_loglike_update(n,
                                             eta_full);
 
 //Metropolis Settings
-arma::mat acctot_Lambda((p - 1), q); acctot_Lambda.fill(0);
-arma::vec acctot_Lambda_vec(q*p - q*(q + 1)/2); acctot_Lambda_vec.fill(0);
+arma::mat acctot_Lambda(p, q); acctot_Lambda.fill(0);
+arma::vec acctot_Lambda_vec(q*p + q - q*(q + 1)/2); acctot_Lambda_vec.fill(0);
 int acctot_A11_trans = 0;
 int acctot_A22_trans = 0; 
 int acctot_phi1_trans = 0;
@@ -231,7 +234,7 @@ for(int j = 1; j < mcmc_samples; ++ j){
    int counter = 0;
    for(int k = 0; k < q; ++ k){
      
-      Rcpp::List Lambda_output = Lambda_update(stick.col(k),
+      Rcpp::List Lambda_output = Lambda_update(Lambda_star.col(k),
                                                Lambda_temp,
                                                k,
                                                p,
@@ -239,18 +242,22 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                                m,
                                                x,
                                                z,
+                                               alpha_Lambda.col(k),
                                                w,
                                                gamma,
                                                beta.col(j),
                                                eta_full,
-                                               metrop_scale_Lambda.col(k),
+                                               metrop_var_Lambda.col(k),
                                                acctot_Lambda.col(k));
      
-      stick.col(k) = Rcpp::as<arma::vec>(Lambda_output[0]);
+      Lambda_star.col(k) = Rcpp::as<arma::vec>(Lambda_output[0]);
       Lambda_temp.col(k) = Rcpp::as<arma::vec>(Lambda_output[1]);
       acctot_Lambda.col(k) = Rcpp::as<arma::vec>(Lambda_output[2]);
-      acctot_Lambda_vec.subvec((0 + counter), (p - 2 - k + counter)) = acctot_Lambda.col(k).subvec(k, (p - 2));
-      counter = counter + (p - k - 1);
+      
+      acctot_Lambda_vec.subvec((0 + counter), (p - 1 - k + counter)) = acctot_Lambda.col(k).subvec(k, (p - 1));
+      counter = counter + 
+                (p - k - 1);
+      
      
       }
    Lambda[j] = Lambda_temp;
