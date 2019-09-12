@@ -7,7 +7,6 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 
 Rcpp::List CWVSmix(int mcmc_samples,
-                   int stable,
                    int p,
                    int q,
                    arma::vec y,
@@ -264,13 +263,7 @@ for(int j = 1; j < mcmc_samples; ++ j){
    Lambda[j] = Lambda_temp;
    
    //delta Update
-   int stable_ind = 0;
-   if((stable - 1) <= j){
-     stable_ind = 1;
-     }
-   
-   Rcpp::List delta_output = delta_update(stable_ind,
-                                          delta[j-1],
+   Rcpp::List delta_output = delta_update(delta[j-1],
                                           p,
                                           q,
                                           m,
