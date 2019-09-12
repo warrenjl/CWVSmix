@@ -6,7 +6,8 @@ using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 
-Rcpp::List delta_update(arma::mat delta_old,
+Rcpp::List delta_update(int stable_ind,
+                        arma::mat delta_old,
                         int p,
                         int q,
                         int m,
@@ -158,10 +159,15 @@ for(int j = 0; j < q; ++ j){
       
          }
       
-      delta(k,j) = as<double>(Rcpp::rbinom(1,
-                                           1,
-                                           probs(1)));
-      eta_full((k*q) + j) = A11_old*w1_old(k)*delta(k,j);
+      delta(k, j) = as<double>(Rcpp::rbinom(1,
+                                            1,
+                                            probs(1)));
+      
+      if((stable_ind == 0) & (j == 0)){
+        delta(k, j) = 1;
+        }
+      
+      eta_full((k*q) + j) = A11_old*w1_old(k)*delta(k, j);
        
       }
   

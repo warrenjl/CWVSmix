@@ -40,7 +40,7 @@ for(int j = ind; j < p; ++ j){
                                  sqrt(metrop_var_Lambda(j))));
 
    for(int k = ind; k < p; ++ k){
-      Lambda(k, ind) = lambda_star(k)/sum(lambda_star);
+      Lambda(k, ind) = lambda_star(k)/sum(lambda_star.subvec(ind, (p - 1)));
       }
    
    double first = -0.50*dot((gamma - x*beta - z*((kron(ident, Lambda))*eta_full)), w%(gamma - x*beta - z*((kron(ident, Lambda))*eta_full))) + 

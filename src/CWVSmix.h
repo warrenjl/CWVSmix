@@ -63,7 +63,8 @@ Rcpp::List Lambda_update(arma::vec lambda_star,
                          arma::vec metrop_var_Lambda,
                          arma::vec acctot_Lambda);
 
-Rcpp::List delta_update(arma::mat delta_old,
+Rcpp::List delta_update(int stable_ind,
+                        arma::mat delta_old,
                         int p,
                         int q,
                         int m,
@@ -171,6 +172,7 @@ double neg_two_loglike_update(int n,
                               arma::vec eta_full);
 
 Rcpp::List CWVSmix(int mcmc_samples,
+                   int stable,
                    int p,
                    int q,
                    arma::vec y,
