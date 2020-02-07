@@ -71,7 +71,7 @@ if(sigma2_beta_prior.isNotNull()){
 arma::mat alpha_Lambda(p, q); alpha_Lambda.fill(0.00);
 for(int j = 0; j < q; ++ j){
    for(int k = j; k < p; ++ k){
-      alpha_Lambda(k, j) = 1.00;
+      alpha_Lambda(k, j) = 0.10;
       }
    }
 if(alpha_Lambda_prior.isNotNull()){
