@@ -13,7 +13,6 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    arma::mat x,
                    arma::mat z,
                    arma::mat metrop_var_Lambda,
-                   int smooth,  //0:  Gaussian Process; 1:  Random Walk
                    double metrop_var_A11_trans,
                    double metrop_var_A22_trans,
                    double metrop_var_phi1_trans,
@@ -173,33 +172,6 @@ Rcpp::List temporal_corr_info1 = temporal_corr_fun(m,
   
 Rcpp::List temporal_corr_info2 = temporal_corr_fun(m, 
                                                    phi2(0));
-
-if(smooth == 1){
-   
-  double log_deter = 0.00; 
-  double sign = 0.00;     
-  arma::mat temporal_corr_inv(m, m); temporal_corr_inv.fill(0.00);
-  for(int j = 0; j < (m - 1); ++ j){
-   
-     temporal_corr_inv(j,j) = 2;
-     temporal_corr_inv(j, (j + 1)) = -1;
-     temporal_corr_inv((j + 1), j) = -1;
-      
-     }
-  temporal_corr_inv((m - 1), (m - 1)) = 1;
-   
-  arma::mat temporal_corr = inv_sympd(temporal_corr_inv);
-  log_det(log_deter, 
-          sign, 
-          temporal_corr);
-  
-  temporal_corr_info1[0] = temporal_corr_inv;
-  temporal_corr_info1[1] = log_deter;
-  
-  temporal_corr_info2[0] = temporal_corr_inv;
-  temporal_corr_info2[1] = log_deter;
-  
-  }
 
 delta_temp = Rcpp::as<arma::mat>(delta[0]);
 arma::vec eta_full(m*q); eta_full.fill(0.00); 
@@ -397,37 +369,33 @@ for(int j = 1; j < mcmc_samples; ++ j){
                        w2.col(j),
                        A22(j));
    
-   if(smooth == 0){
-      
-     //phi1 Update
-     Rcpp::List phi1_output = phi_update(phi1(j-1),
-                                         m,
-                                         alpha_phi1,
-                                         beta_phi1,
-                                         w1.col(j),
-                                         temporal_corr_info1,
-                                         metrop_var_phi1_trans,
-                                         acctot_phi1_trans);
+   //phi1 Update
+   Rcpp::List phi1_output = phi_update(phi1(j-1),
+                                       m,
+                                       alpha_phi1,
+                                       beta_phi1,
+                                       w1.col(j),
+                                       temporal_corr_info1,
+                                       metrop_var_phi1_trans,
+                                       acctot_phi1_trans);
      
-     phi1(j) = Rcpp::as<double>(phi1_output[0]);
-     acctot_phi1_trans = Rcpp::as<int>(phi1_output[1]);
-     temporal_corr_info1 = phi1_output[2];
+   phi1(j) = Rcpp::as<double>(phi1_output[0]);
+   acctot_phi1_trans = Rcpp::as<int>(phi1_output[1]);
+   temporal_corr_info1 = phi1_output[2];
    
-     //phi2 Update
-     Rcpp::List phi2_output = phi_update(phi2(j-1),
-                                         m,
-                                         alpha_phi2,
-                                         beta_phi2,
-                                         w2.col(j),
-                                         temporal_corr_info2,
-                                         metrop_var_phi2_trans,
-                                         acctot_phi2_trans);
+   //phi2 Update
+   Rcpp::List phi2_output = phi_update(phi2(j-1),
+                                       m,
+                                       alpha_phi2,
+                                       beta_phi2,
+                                       w2.col(j),
+                                       temporal_corr_info2,
+                                       metrop_var_phi2_trans,
+                                       acctot_phi2_trans);
       
-     phi2(j) = Rcpp::as<double>(phi2_output[0]);
-     acctot_phi2_trans = Rcpp::as<int>(phi2_output[1]);
-     temporal_corr_info2 = phi2_output[2];
-     
-     }
+   phi2(j) = Rcpp::as<double>(phi2_output[0]);
+   acctot_phi2_trans = Rcpp::as<int>(phi2_output[1]);
+   temporal_corr_info2 = phi2_output[2];
   
    //neg_two_loglike Update
    neg_two_loglike(j) = neg_two_loglike_update(n,
@@ -462,15 +430,11 @@ for(int j = 1; j < mcmc_samples; ++ j){
        double accrate_A22_trans = round(100*(min(acctot_A22_trans)/(double)j));
        Rcpp::Rcout << "A22 Acceptance: " << accrate_A22_trans << "%" << std::endl;
        
-       if(smooth == 0){
-          
-         double accrate_phi1_trans = round(100*(min(acctot_phi1_trans)/(double)j));
-         Rcpp::Rcout << "phi1 Acceptance: " << accrate_phi1_trans << "%" << std::endl;
+       double accrate_phi1_trans = round(100*(min(acctot_phi1_trans)/(double)j));
+       Rcpp::Rcout << "phi1 Acceptance: " << accrate_phi1_trans << "%" << std::endl;
        
-         double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
-         Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
-         
-         }
+       double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
+       Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
        
        Rcpp::Rcout << "***********************" << std::endl;
        
@@ -490,15 +454,11 @@ for(int j = 1; j < mcmc_samples; ++ j){
        double accrate_A22_trans = round(100*(min(acctot_A22_trans)/(double)j));
        Rcpp::Rcout << "A22 Acceptance: " << accrate_A22_trans << "%" << std::endl;
        
-       if(smooth == 0){
-          
-         double accrate_phi1_trans = round(100*(min(acctot_phi1_trans)/(double)j));
-         Rcpp::Rcout << "phi1 Acceptance: " << accrate_phi1_trans << "%" << std::endl;
+       double accrate_phi1_trans = round(100*(min(acctot_phi1_trans)/(double)j));
+       Rcpp::Rcout << "phi1 Acceptance: " << accrate_phi1_trans << "%" << std::endl;
        
-         double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
-         Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
-      
-         }
+       double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
+       Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
        
        Rcpp::Rcout << "*****************************" << std::endl;
       
