@@ -254,9 +254,9 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                     Lambda[j-1],
                                     eta_full);
   
-     arma::vec w = w_output[0];
-     arma::vec gamma = w_output[1];
-     
+     w = Rcpp::as<arma::vec>(w_output[0]);
+     gamma = Rcpp::as<arma::vec>(w_output[1]);
+  
      }
   
    //beta Update
