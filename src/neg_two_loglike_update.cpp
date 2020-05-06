@@ -7,12 +7,12 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 
 double neg_two_loglike_update(int n,
-                              int p,
-                              int q,
                               int m,
                               arma::vec y,
                               arma::mat x,
                               arma::mat z, 
+                              int likelihood_indicator,
+                              double sigma2_epsilon,
                               arma::vec beta,
                               arma::mat Lambda,
                               arma::vec eta_full){
@@ -20,17 +20,30 @@ double neg_two_loglike_update(int n,
 arma::mat ident(m, m); ident.eye();
 arma::vec dens(n); dens.fill(0.00);
 
-arma::vec logit_probs = x*beta + 
-                        z*((kron(ident, Lambda))*eta_full);
+arma::vec mu = x*beta + 
+               z*((kron(ident, Lambda))*eta_full);
 
-arma::vec probs = exp(logit_probs)/(1.00 + exp(logit_probs));
+if(likelihood_indicator == 0){
+  
+  arma::vec probs = exp(mu)/(1.00 + exp(mu));
 
-for(int j = 0; j < n; ++ j){
-   dens(j) = R::dbinom(y(j),
-                       1,
-                       probs(j),
-                       TRUE);
-   }
+  for(int j = 0; j < n; ++ j){
+     dens(j) = R::dbinom(y(j),
+                         1,
+                         probs(j),
+                         TRUE);
+     }
+  
+  }
+
+if(likelihood_indicator == 1){
+  for(int j = 0; j < n; ++j){
+     dens(j) = R::dnorm(y(j),
+                        mu(j),
+                        sqrt(sigma2_epsilon),
+                        TRUE);
+     }
+  }
 
 double neg_two_loglike = -2.00*sum(dens);
 

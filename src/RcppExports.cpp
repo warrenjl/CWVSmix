@@ -68,8 +68,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // CWVSmix
-Rcpp::List CWVSmix(int mcmc_samples, int p, int q, arma::vec y, arma::mat x, arma::mat z, arma::mat metrop_var_Lambda, double metrop_var_A11_trans, double metrop_var_A22_trans, double metrop_var_phi1_trans, double metrop_var_phi2_trans, Rcpp::Nullable<double> sigma2_beta_prior, Rcpp::Nullable<Rcpp::NumericMatrix> alpha_Lambda_prior, Rcpp::Nullable<double> sigma2_A_prior, Rcpp::Nullable<double> alpha_phi1_prior, Rcpp::Nullable<double> beta_phi1_prior, Rcpp::Nullable<double> alpha_phi2_prior, Rcpp::Nullable<double> beta_phi2_prior, Rcpp::Nullable<Rcpp::NumericVector> beta_init, Rcpp::Nullable<Rcpp::NumericMatrix> Lambda_init, Rcpp::Nullable<Rcpp::NumericMatrix> delta_init, Rcpp::Nullable<Rcpp::NumericVector> w1_init, Rcpp::Nullable<Rcpp::NumericVector> w2_init, Rcpp::Nullable<double> A11_init, Rcpp::Nullable<double> A22_init, Rcpp::Nullable<double> A21_init, Rcpp::Nullable<double> phi1_init, Rcpp::Nullable<double> phi2_init);
-RcppExport SEXP _CWVSmix_CWVSmix(SEXP mcmc_samplesSEXP, SEXP pSEXP, SEXP qSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP metrop_var_LambdaSEXP, SEXP metrop_var_A11_transSEXP, SEXP metrop_var_A22_transSEXP, SEXP metrop_var_phi1_transSEXP, SEXP metrop_var_phi2_transSEXP, SEXP sigma2_beta_priorSEXP, SEXP alpha_Lambda_priorSEXP, SEXP sigma2_A_priorSEXP, SEXP alpha_phi1_priorSEXP, SEXP beta_phi1_priorSEXP, SEXP alpha_phi2_priorSEXP, SEXP beta_phi2_priorSEXP, SEXP beta_initSEXP, SEXP Lambda_initSEXP, SEXP delta_initSEXP, SEXP w1_initSEXP, SEXP w2_initSEXP, SEXP A11_initSEXP, SEXP A22_initSEXP, SEXP A21_initSEXP, SEXP phi1_initSEXP, SEXP phi2_initSEXP) {
+Rcpp::List CWVSmix(int mcmc_samples, int p, int q, arma::vec y, arma::mat x, arma::mat z, arma::mat metrop_var_Lambda, double metrop_var_A11_trans, double metrop_var_A22_trans, double metrop_var_phi1_trans, double metrop_var_phi2_trans, int likelihood_indicator, Rcpp::Nullable<double> a_sigma2_epsilon_prior, Rcpp::Nullable<double> b_sigma2_epsilon_prior, Rcpp::Nullable<double> sigma2_beta_prior, Rcpp::Nullable<Rcpp::NumericMatrix> alpha_Lambda_prior, Rcpp::Nullable<double> sigma2_A_prior, Rcpp::Nullable<double> alpha_phi1_prior, Rcpp::Nullable<double> beta_phi1_prior, Rcpp::Nullable<double> alpha_phi2_prior, Rcpp::Nullable<double> beta_phi2_prior, Rcpp::Nullable<double> sigma2_epsilon_init, Rcpp::Nullable<Rcpp::NumericVector> beta_init, Rcpp::Nullable<Rcpp::NumericMatrix> Lambda_init, Rcpp::Nullable<Rcpp::NumericMatrix> delta_init, Rcpp::Nullable<Rcpp::NumericVector> w1_init, Rcpp::Nullable<Rcpp::NumericVector> w2_init, Rcpp::Nullable<double> A11_init, Rcpp::Nullable<double> A22_init, Rcpp::Nullable<double> A21_init, Rcpp::Nullable<double> phi1_init, Rcpp::Nullable<double> phi2_init);
+RcppExport SEXP _CWVSmix_CWVSmix(SEXP mcmc_samplesSEXP, SEXP pSEXP, SEXP qSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP metrop_var_LambdaSEXP, SEXP metrop_var_A11_transSEXP, SEXP metrop_var_A22_transSEXP, SEXP metrop_var_phi1_transSEXP, SEXP metrop_var_phi2_transSEXP, SEXP likelihood_indicatorSEXP, SEXP a_sigma2_epsilon_priorSEXP, SEXP b_sigma2_epsilon_priorSEXP, SEXP sigma2_beta_priorSEXP, SEXP alpha_Lambda_priorSEXP, SEXP sigma2_A_priorSEXP, SEXP alpha_phi1_priorSEXP, SEXP beta_phi1_priorSEXP, SEXP alpha_phi2_priorSEXP, SEXP beta_phi2_priorSEXP, SEXP sigma2_epsilon_initSEXP, SEXP beta_initSEXP, SEXP Lambda_initSEXP, SEXP delta_initSEXP, SEXP w1_initSEXP, SEXP w2_initSEXP, SEXP A11_initSEXP, SEXP A22_initSEXP, SEXP A21_initSEXP, SEXP phi1_initSEXP, SEXP phi2_initSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -84,6 +84,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type metrop_var_A22_trans(metrop_var_A22_transSEXP);
     Rcpp::traits::input_parameter< double >::type metrop_var_phi1_trans(metrop_var_phi1_transSEXP);
     Rcpp::traits::input_parameter< double >::type metrop_var_phi2_trans(metrop_var_phi2_transSEXP);
+    Rcpp::traits::input_parameter< int >::type likelihood_indicator(likelihood_indicatorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type a_sigma2_epsilon_prior(a_sigma2_epsilon_priorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type b_sigma2_epsilon_prior(b_sigma2_epsilon_priorSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type sigma2_beta_prior(sigma2_beta_priorSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericMatrix> >::type alpha_Lambda_prior(alpha_Lambda_priorSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type sigma2_A_prior(sigma2_A_priorSEXP);
@@ -91,6 +94,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type beta_phi1_prior(beta_phi1_priorSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type alpha_phi2_prior(alpha_phi2_priorSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type beta_phi2_prior(beta_phi2_priorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type sigma2_epsilon_init(sigma2_epsilon_initSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type beta_init(beta_initSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericMatrix> >::type Lambda_init(Lambda_initSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericMatrix> >::type delta_init(delta_initSEXP);
@@ -101,7 +105,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type A21_init(A21_initSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type phi1_init(phi1_initSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type phi2_init(phi2_initSEXP);
-    rcpp_result_gen = Rcpp::wrap(CWVSmix(mcmc_samples, p, q, y, x, z, metrop_var_Lambda, metrop_var_A11_trans, metrop_var_A22_trans, metrop_var_phi1_trans, metrop_var_phi2_trans, sigma2_beta_prior, alpha_Lambda_prior, sigma2_A_prior, alpha_phi1_prior, beta_phi1_prior, alpha_phi2_prior, beta_phi2_prior, beta_init, Lambda_init, delta_init, w1_init, w2_init, A11_init, A22_init, A21_init, phi1_init, phi2_init));
+    rcpp_result_gen = Rcpp::wrap(CWVSmix(mcmc_samples, p, q, y, x, z, metrop_var_Lambda, metrop_var_A11_trans, metrop_var_A22_trans, metrop_var_phi1_trans, metrop_var_phi2_trans, likelihood_indicator, a_sigma2_epsilon_prior, b_sigma2_epsilon_prior, sigma2_beta_prior, alpha_Lambda_prior, sigma2_A_prior, alpha_phi1_prior, beta_phi1_prior, alpha_phi2_prior, beta_phi2_prior, sigma2_epsilon_init, beta_init, Lambda_init, delta_init, w1_init, w2_init, A11_init, A22_init, A21_init, phi1_init, phi2_init));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -220,22 +224,22 @@ BEGIN_RCPP
 END_RCPP
 }
 // neg_two_loglike_update
-double neg_two_loglike_update(int n, int p, int q, int m, arma::vec y, arma::mat x, arma::mat z, arma::vec beta, arma::mat Lambda, arma::vec eta_full);
-RcppExport SEXP _CWVSmix_neg_two_loglike_update(SEXP nSEXP, SEXP pSEXP, SEXP qSEXP, SEXP mSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP betaSEXP, SEXP LambdaSEXP, SEXP eta_fullSEXP) {
+double neg_two_loglike_update(int n, int m, arma::vec y, arma::mat x, arma::mat z, int likelihood_indicator, double sigma2_epsilon, arma::vec beta, arma::mat Lambda, arma::vec eta_full);
+RcppExport SEXP _CWVSmix_neg_two_loglike_update(SEXP nSEXP, SEXP mSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP likelihood_indicatorSEXP, SEXP sigma2_epsilonSEXP, SEXP betaSEXP, SEXP LambdaSEXP, SEXP eta_fullSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< int >::type q(qSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
     Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
+    Rcpp::traits::input_parameter< int >::type likelihood_indicator(likelihood_indicatorSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma2_epsilon(sigma2_epsilonSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Lambda(LambdaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type eta_full(eta_fullSEXP);
-    rcpp_result_gen = Rcpp::wrap(neg_two_loglike_update(n, p, q, m, y, x, z, beta, Lambda, eta_full));
+    rcpp_result_gen = Rcpp::wrap(neg_two_loglike_update(n, m, y, x, z, likelihood_indicator, sigma2_epsilon, beta, Lambda, eta_full));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -292,6 +296,27 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type lower(lowerSEXP);
     Rcpp::traits::input_parameter< double >::type upper(upperSEXP);
     rcpp_result_gen = Rcpp::wrap(rnorm_trunc(mu, sigma, lower, upper));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sigma2_epsilon_update
+double sigma2_epsilon_update(int n, int m, arma::vec y, arma::mat x, arma::mat z, int likelihood_indicator, double a_sigma2_epsilon, double b_sigma2_epsilon, arma::vec beta_old, arma::mat Lambda_old, arma::vec eta_full);
+RcppExport SEXP _CWVSmix_sigma2_epsilon_update(SEXP nSEXP, SEXP mSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP likelihood_indicatorSEXP, SEXP a_sigma2_epsilonSEXP, SEXP b_sigma2_epsilonSEXP, SEXP beta_oldSEXP, SEXP Lambda_oldSEXP, SEXP eta_fullSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
+    Rcpp::traits::input_parameter< int >::type likelihood_indicator(likelihood_indicatorSEXP);
+    Rcpp::traits::input_parameter< double >::type a_sigma2_epsilon(a_sigma2_epsilonSEXP);
+    Rcpp::traits::input_parameter< double >::type b_sigma2_epsilon(b_sigma2_epsilonSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_old(beta_oldSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Lambda_old(Lambda_oldSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type eta_full(eta_fullSEXP);
+    rcpp_result_gen = Rcpp::wrap(sigma2_epsilon_update(n, m, y, x, z, likelihood_indicator, a_sigma2_epsilon, b_sigma2_epsilon, beta_old, Lambda_old, eta_full));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -389,7 +414,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CWVSmix_A11_update", (DL_FUNC) &_CWVSmix_A11_update, 15},
     {"_CWVSmix_A21_update", (DL_FUNC) &_CWVSmix_A21_update, 6},
     {"_CWVSmix_A22_update", (DL_FUNC) &_CWVSmix_A22_update, 10},
-    {"_CWVSmix_CWVSmix", (DL_FUNC) &_CWVSmix_CWVSmix, 28},
+    {"_CWVSmix_CWVSmix", (DL_FUNC) &_CWVSmix_CWVSmix, 32},
     {"_CWVSmix_Lambda_update", (DL_FUNC) &_CWVSmix_Lambda_update, 15},
     {"_CWVSmix_beta_update", (DL_FUNC) &_CWVSmix_beta_update, 12},
     {"_CWVSmix_delta_star_update", (DL_FUNC) &_CWVSmix_delta_star_update, 7},
@@ -401,6 +426,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CWVSmix_phi_update", (DL_FUNC) &_CWVSmix_phi_update, 8},
     {"_CWVSmix_rcpp_pgdraw", (DL_FUNC) &_CWVSmix_rcpp_pgdraw, 2},
     {"_CWVSmix_rnorm_trunc", (DL_FUNC) &_CWVSmix_rnorm_trunc, 4},
+    {"_CWVSmix_sigma2_epsilon_update", (DL_FUNC) &_CWVSmix_sigma2_epsilon_update, 11},
     {"_CWVSmix_temporal_corr_fun", (DL_FUNC) &_CWVSmix_temporal_corr_fun, 2},
     {"_CWVSmix_unif_rs", (DL_FUNC) &_CWVSmix_unif_rs, 2},
     {"_CWVSmix_w1_update", (DL_FUNC) &_CWVSmix_w1_update, 17},

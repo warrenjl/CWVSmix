@@ -17,6 +17,9 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    double metrop_var_A22_trans,
                    double metrop_var_phi1_trans,
                    double metrop_var_phi2_trans,
+                   int likelihood_indicator,
+                   Rcpp::Nullable<double> a_sigma2_epsilon_prior = R_NilValue,
+                   Rcpp::Nullable<double> b_sigma2_epsilon_prior = R_NilValue,
                    Rcpp::Nullable<double> sigma2_beta_prior = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericMatrix> alpha_Lambda_prior = R_NilValue,
                    Rcpp::Nullable<double> sigma2_A_prior = R_NilValue,
@@ -24,6 +27,7 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    Rcpp::Nullable<double> beta_phi1_prior = R_NilValue,
                    Rcpp::Nullable<double> alpha_phi2_prior = R_NilValue,
                    Rcpp::Nullable<double> beta_phi2_prior = R_NilValue,
+                   Rcpp::Nullable<double> sigma2_epsilon_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericVector> beta_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericMatrix> Lambda_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericMatrix> delta_init = R_NilValue,
@@ -41,6 +45,7 @@ int m = z.n_cols/p;
 double max_time = (m - 1);
 int p_x = x.n_cols;
 
+arma::vec sigma2_epsilon(mcmc_samples); sigma2_epsilon.fill(0.00);
 arma::mat beta(p_x, mcmc_samples); beta.fill(0.00);
 Rcpp::List Lambda(mcmc_samples);
 Rcpp::List delta(mcmc_samples);
@@ -63,6 +68,16 @@ arma::vec phi2(mcmc_samples); phi2.fill(0.00);
 arma::vec neg_two_loglike(mcmc_samples); neg_two_loglike.fill(0.00);
 
 //Prior Information
+double a_sigma2_epsilon = 0.01;
+if(a_sigma2_epsilon_prior.isNotNull()){
+  a_sigma2_epsilon = Rcpp::as<double>(a_sigma2_epsilon_prior);
+  }
+
+double b_sigma2_epsilon = 0.01;
+if(b_sigma2_epsilon_prior.isNotNull()){
+  b_sigma2_epsilon = Rcpp::as<double>(b_sigma2_epsilon_prior);
+  }
+
 double sigma2_beta = 10000.00;
 if(sigma2_beta_prior.isNotNull()){
   sigma2_beta = Rcpp::as<double>(sigma2_beta_prior);
@@ -104,6 +119,11 @@ if(beta_phi2_prior.isNotNull()){
   }
 
 //Initial Values
+sigma2_epsilon(0) = 1.00;
+if(sigma2_epsilon_init.isNotNull()){
+  sigma2_epsilon(0) = Rcpp::as<double>(sigma2_epsilon_init);
+  }
+
 beta.col(0).fill(0.00);
 if(beta_init.isNotNull()){
   beta.col(0) = Rcpp::as<arma::vec>(beta_init);
@@ -180,12 +200,12 @@ for(int j = 0; j < m; ++ j){
    }
 
 neg_two_loglike(0) = neg_two_loglike_update(n,
-                                            p,
-                                            q,
                                             m,
                                             y,
                                             x,
-                                            z, 
+                                            z,
+                                            likelihood_indicator,
+                                            sigma2_epsilon(0),
                                             beta.col(0),
                                             Lambda[0],
                                             eta_full);
@@ -199,21 +219,45 @@ int acctot_phi1_trans = 0;
 int acctot_phi2_trans = 0; 
 
 //Main Sampling Loop
+arma::vec w(y.size()); w.fill(0.00);
+arma::vec gamma = y;
 for(int j = 1; j < mcmc_samples; ++ j){
+   
+   if(likelihood_indicator == 1){
+      
+     //sigma2_epsilon Update
+     sigma2_epsilon(j) = sigma2_epsilon_update(n,
+                                               m,
+                                               y,
+                                               x,
+                                               z, 
+                                               likelihood_indicator,
+                                               a_sigma2_epsilon,
+                                               b_sigma2_epsilon,
+                                               beta.col(j-1),
+                                               Lambda[j-1],
+                                               eta_full);
+     w.fill(1.00/sigma2_epsilon(j));
+      
+     }
   
-   //w Update
-   Rcpp::List w_output = w_update(p,
-                                  q,
-                                  m,
-                                  y,
-                                  x,
-                                  z,
-                                  beta.col(j-1),
-                                  Lambda[j-1],
-                                  eta_full);
+   if(likelihood_indicator == 0){
+      
+     //w Update
+     Rcpp::List w_output = w_update(p,
+                                    q,
+                                    m,
+                                    y,
+                                    x,
+                                    z,
+                                    beta.col(j-1),
+                                    Lambda[j-1],
+                                    eta_full);
   
-   arma::vec w = w_output[0];
-   arma::vec gamma = w_output[1];
+     arma::vec w = w_output[0];
+     arma::vec gamma = w_output[1];
+     
+     }
   
    //beta Update
    beta.col(j) = beta_update(n,
@@ -399,12 +443,12 @@ for(int j = 1; j < mcmc_samples; ++ j){
   
    //neg_two_loglike Update
    neg_two_loglike(j) = neg_two_loglike_update(n,
-                                               p,
-                                               q,
                                                m,
                                                y,
                                                x,
                                                z, 
+                                               likelihood_indicator,
+                                               sigma2_epsilon(j),
                                                beta.col(j),
                                                Lambda[j],
                                                eta_full);
@@ -468,7 +512,8 @@ for(int j = 1; j < mcmc_samples; ++ j){
   
    }
        
-return Rcpp::List::create(Rcpp::Named("beta") = beta,
+return Rcpp::List::create(Rcpp::Named("sigma2_epsilon") = sigma2_epsilon,
+                          Rcpp::Named("beta") = beta,
                           Rcpp::Named("Lambda") = Lambda,
                           Rcpp::Named("delta") = delta,
                           Rcpp::Named("w1") = w1,
