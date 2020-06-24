@@ -7,10 +7,9 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 
 Rcpp::List A22_update(double A22_old,
-                      int q,
                       int m,
                       double sigma2_A,
-                      arma::mat delta_star,
+                      arma::vec delta_star,
                       arma::vec w1,
                       arma::vec w2,
                       double A21_old,
@@ -22,16 +21,12 @@ double A22_trans_old = log(A22_old);
 
 arma::vec mean_piece_old(m); mean_piece_old.fill(0.00);
 double second = 0.00;
-for(int j = 0; j < q; ++ j){
+mean_piece_old = delta_star - 
+                 A21_old*w1 - 
+                 A22_old*w2;
   
-   mean_piece_old = delta_star.col(j) - 
-                    A21_old*w1 - 
-                    A22_old*w2;
-  
-   second = second +
-            -0.50*dot(mean_piece_old, mean_piece_old);
-   
-   }
+second = second +
+         -0.50*dot(mean_piece_old, mean_piece_old);
 
 second = second + 
          -0.50*(1.00/sigma2_A)*(A22_trans_old*A22_trans_old);
@@ -43,16 +38,12 @@ double A22 = exp(A22_trans);
 
 arma::vec mean_piece(m); mean_piece.fill(0.00);
 double first = 0.00;
-for(int j = 0; j < q; ++ j){
+mean_piece = delta_star - 
+             A21_old*w1 - 
+             A22*w2;
   
-   mean_piece = delta_star.col(j) - 
-                A21_old*w1 - 
-                A22*w2;
-  
-   first = first +
-           -0.50*dot(mean_piece, mean_piece);
-  
-   }
+first = first +
+        -0.50*dot(mean_piece, mean_piece);
 
 first = first + 
         -0.50*(1.00/sigma2_A)*(A22_trans*A22_trans);

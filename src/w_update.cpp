@@ -6,20 +6,20 @@ using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 
-Rcpp::List w_update(int p,
-                    int q,
+Rcpp::List w_update(int n,
+                    int p,
                     int m,
                     arma::vec y,
                     arma::mat x,
                     arma::mat z,
                     arma::vec beta_old,
-                    arma::mat Lambda_old,
-                    arma::vec eta_full){
+                    arma::vec eta_full,
+                    arma::mat risk_sum){
   
 arma::mat ident(m, m); ident.eye();
 
 arma::vec mean_w = x*beta_old + 
-                   z*((kron(ident, Lambda_old))*eta_full);
+                   risk_sum*eta_full;
 
 arma::vec w = rcpp_pgdraw(1.00,
                           mean_w);

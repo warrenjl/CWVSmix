@@ -7,8 +7,8 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 
 Rcpp::List A11_update(double A11_old,
+                      int n,
                       int p,
-                      int q,
                       int m,
                       arma::mat x,
                       arma::mat z,
@@ -16,16 +16,16 @@ Rcpp::List A11_update(double A11_old,
                       arma::vec w,
                       arma::vec gamma,
                       arma::vec beta,
-                      arma::mat Lambda,
-                      arma::mat delta,
+                      arma::vec delta,
                       arma::vec w1,
+                      arma::mat risk_sum,
                       double metrop_var_A11_trans,
                       int acctot_A11_trans){
   
 arma::mat ident(m, m); ident.eye();
-arma::vec eta_sub(m*q); eta_sub.fill(0.00); 
+arma::vec eta_sub(m); eta_sub.fill(0.00); 
 for(int j = 0; j < m; ++ j){
-   eta_sub.subvec((j*q), (q*(j + 1) - 1)) = w1(j)*trans(delta.row(j));
+   eta_sub(j) = w1(j)*delta(j);
    }
 
 /*Second*/
@@ -34,7 +34,7 @@ arma::vec eta_full_old = A11_old*eta_sub;
   
 arma::vec mean_piece_old = gamma - 
                            x*beta - 
-                           z*((kron(ident, Lambda))*eta_full_old);
+                           risk_sum*eta_full_old;
 
 double second = -0.50*dot(mean_piece_old, w%mean_piece_old) + 
                 -0.50*(1.00/sigma2_A)*(A11_trans_old*A11_trans_old);
@@ -47,7 +47,7 @@ arma::vec eta_full = A11*eta_sub;
    
 arma::vec mean_piece = gamma - 
                        x*beta - 
-                       z*((kron(ident, Lambda))*eta_full);
+                       risk_sum*eta_full;
 
 double first = -0.50*dot(mean_piece, w%mean_piece) + 
                -0.50*(1.00/sigma2_A)*(A11_trans*A11_trans);

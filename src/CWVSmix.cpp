@@ -8,11 +8,11 @@ using namespace Rcpp;
 
 Rcpp::List CWVSmix(int mcmc_samples,
                    int p,
-                   int q,
                    arma::vec y,
                    arma::mat x,
                    arma::mat z,
-                   arma::mat metrop_var_Lambda,
+                   arma::mat metrop_var_lambda,
+                   double metrop_var_rho_trans,
                    double metrop_var_A11_trans,
                    double metrop_var_A22_trans,
                    double metrop_var_phi1_trans,
@@ -21,7 +21,7 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    Rcpp::Nullable<double> a_sigma2_epsilon_prior = R_NilValue,
                    Rcpp::Nullable<double> b_sigma2_epsilon_prior = R_NilValue,
                    Rcpp::Nullable<double> sigma2_beta_prior = R_NilValue,
-                   Rcpp::Nullable<Rcpp::NumericMatrix> alpha_Lambda_prior = R_NilValue,
+                   Rcpp::Nullable<Rcpp::NumericMatrix> alpha_lambda_prior = R_NilValue,
                    Rcpp::Nullable<double> sigma2_A_prior = R_NilValue,
                    Rcpp::Nullable<double> alpha_phi1_prior = R_NilValue,
                    Rcpp::Nullable<double> beta_phi1_prior = R_NilValue,
@@ -29,8 +29,9 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    Rcpp::Nullable<double> beta_phi2_prior = R_NilValue,
                    Rcpp::Nullable<double> sigma2_epsilon_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericVector> beta_init = R_NilValue,
-                   Rcpp::Nullable<Rcpp::NumericMatrix> Lambda_init = R_NilValue,
-                   Rcpp::Nullable<Rcpp::NumericMatrix> delta_init = R_NilValue,
+                   Rcpp::Nullable<Rcpp::NumericMatrix> lambda_init = R_NilValue,
+                   Rcpp::Nullable<double> rho_init = R_NilValue,
+                   Rcpp::Nullable<Rcpp::NumericVector> delta_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericVector> w1_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericVector> w2_init = R_NilValue,
                    Rcpp::Nullable<double> A11_init = R_NilValue,
@@ -47,17 +48,15 @@ int p_x = x.n_cols;
 
 arma::vec sigma2_epsilon(mcmc_samples); sigma2_epsilon.fill(0.00);
 arma::mat beta(p_x, mcmc_samples); beta.fill(0.00);
-Rcpp::List Lambda(mcmc_samples);
-Rcpp::List delta(mcmc_samples);
+Rcpp::List lambda(mcmc_samples);
 for(int j = 0; j < mcmc_samples; ++ j){
   
-   arma::mat Lambda_temp(p, q); Lambda_temp.fill(0.00);
-   Lambda[j] = Lambda_temp;
+   arma::mat lambda_temp(p, m); lambda_temp.fill(0.00);
+   lambda[j] = lambda_temp;
    
-   arma::mat delta_temp(m, q); delta_temp.fill(0.00);
-   delta[j] = delta_temp;
-  
    }
+arma::vec rho(mcmc_samples); rho.fill(0.00);
+arma::mat delta(m, mcmc_samples);
 arma::mat w1(m, mcmc_samples); w1.fill(0.00);
 arma::mat w2(m, mcmc_samples); w2.fill(0.00);
 arma::vec A11(mcmc_samples); A11.fill(0.00);
@@ -83,14 +82,14 @@ if(sigma2_beta_prior.isNotNull()){
   sigma2_beta = Rcpp::as<double>(sigma2_beta_prior);
   }
 
-arma::mat alpha_Lambda(p, q); alpha_Lambda.fill(0.00);
-for(int j = 0; j < q; ++ j){
-   for(int k = j; k < p; ++ k){
-      alpha_Lambda(k, j) = 0.10;
+arma::mat alpha_lambda(p, m); alpha_lambda.fill(0.00);
+for(int j = 0; j < p; ++ j){
+   for(int k = 0; k < m; ++ k){
+      alpha_lambda(j, k) = 0.10;
       }
    }
-if(alpha_Lambda_prior.isNotNull()){
-  alpha_Lambda = Rcpp::as<arma::mat>(alpha_Lambda_prior);
+if(alpha_lambda_prior.isNotNull()){
+  alpha_lambda = Rcpp::as<arma::mat>(alpha_lambda_prior);
   }
 
 double sigma2_A = 1.00;
@@ -129,28 +128,27 @@ if(beta_init.isNotNull()){
   beta.col(0) = Rcpp::as<arma::vec>(beta_init);
   }
 
-arma::mat Lambda_temp(p, q); Lambda_temp.fill(0.00);
-for(int j = 0; j < q; ++ j){
-   for(int k = j; k < p; ++ k){
-      Lambda_temp(k, j) = alpha_Lambda(k, j)/sum(alpha_Lambda.col(j).subvec(j, (p - 1)));
+arma::mat lambda_temp(p, m); lambda_temp.fill(0.00);
+for(int j = 0; j < p; ++ j){
+   for(int k = 0; k < m; ++ k){
+      lambda_temp(j, k) = alpha_lambda(j, k)/sum(alpha_lambda.col(k));
       }
    }
-if(Lambda_init.isNotNull()){
-  Lambda_temp = Rcpp::as<arma::mat>(Lambda_init);
+if(lambda_init.isNotNull()){
+  lambda_temp = Rcpp::as<arma::mat>(lambda_init);
   }
-Lambda[0] = Lambda_temp;
-arma::mat Lambda_star(p, q); Lambda_star.fill(0.00);
-for(int j = 0; j < q; ++ j){
-   for(int k = j; k < p; ++ k){
-      Lambda_star(k, j) = Lambda_temp(k, j);
-      }
-   }
+lambda[0] = lambda_temp;
+arma::mat lambda_star = lambda_temp;
 
-arma::mat delta_temp(m, q); delta_temp.fill(0.00); delta_temp.col(0).fill(1.00);
-if(delta_init.isNotNull()){
-  delta_temp = Rcpp::as<arma::mat>(delta_init);
+rho(0) = 0.50;
+if(rho_init.isNotNull()){
+  rho(0) = Rcpp::as<double>(rho_init);
   }
-delta[0] = delta_temp;
+
+delta.col(0).fill(1.00);
+if(delta_init.isNotNull()){
+  delta.col(0) = Rcpp::as<arma::vec>(delta_init);
+  }
 
 w1.col(0).fill(0.00);
 if(w1_init.isNotNull()){
@@ -193,13 +191,15 @@ Rcpp::List temporal_corr_info1 = temporal_corr_fun(m,
 Rcpp::List temporal_corr_info2 = temporal_corr_fun(m, 
                                                    phi2(0));
 
-delta_temp = Rcpp::as<arma::mat>(delta[0]);
-arma::vec eta_full(m*q); eta_full.fill(0.00); 
+arma::vec eta_full = A11(0)*(w1.col(0)%delta.col(0));
+
+arma::mat risk_sum(n, m); risk_sum.fill(0.00);
 for(int j = 0; j < m; ++ j){
-   eta_full.subvec((j*q), (q*(j + 1) - 1)) = A11(0)*w1(j, 0)*trans(delta_temp.row(j));
+   risk_sum.col(j) = z.cols(p*j, (p*(j + 1) - 1))*Rcpp::as<arma::mat>(lambda[0]).col(j);
    }
 
 neg_two_loglike(0) = neg_two_loglike_update(n,
+                                            p,
                                             m,
                                             y,
                                             x,
@@ -207,12 +207,13 @@ neg_two_loglike(0) = neg_two_loglike_update(n,
                                             likelihood_indicator,
                                             sigma2_epsilon(0),
                                             beta.col(0),
-                                            Lambda[0],
-                                            eta_full);
+                                            eta_full,
+                                            risk_sum);
 
 //Metropolis Settings
-arma::mat acctot_Lambda(p, q); acctot_Lambda.fill(0);
-arma::vec acctot_Lambda_vec(q*p + q - q*(q + 1)/2); acctot_Lambda_vec.fill(0);
+arma::mat acctot_lambda(p, m); acctot_lambda.fill(0);
+arma::vec acctot_lambda_vec(p*m); acctot_lambda_vec.fill(0);
+int acctot_rho_trans = 0;
 int acctot_A11_trans = 0;
 int acctot_A22_trans = 0; 
 int acctot_phi1_trans = 0;
@@ -227,6 +228,7 @@ for(int j = 1; j < mcmc_samples; ++ j){
       
      //sigma2_epsilon Update
      sigma2_epsilon(j) = sigma2_epsilon_update(n,
+                                               p,
                                                m,
                                                y,
                                                x,
@@ -235,8 +237,8 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                                a_sigma2_epsilon,
                                                b_sigma2_epsilon,
                                                beta.col(j-1),
-                                               Lambda[j-1],
-                                               eta_full);
+                                               eta_full,
+                                               risk_sum);
      w.fill(1.00/sigma2_epsilon(j));
       
      }
@@ -244,15 +246,15 @@ for(int j = 1; j < mcmc_samples; ++ j){
    if(likelihood_indicator == 0){
       
      //w Update
-     Rcpp::List w_output = w_update(p,
-                                    q,
+     Rcpp::List w_output = w_update(n,
+                                    p,
                                     m,
                                     y,
                                     x,
                                     z,
                                     beta.col(j-1),
-                                    Lambda[j-1],
-                                    eta_full);
+                                    eta_full,
+                                    risk_sum);
   
      w = Rcpp::as<arma::vec>(w_output[0]);
      gamma = Rcpp::as<arma::vec>(w_output[1]);
@@ -262,7 +264,6 @@ for(int j = 1; j < mcmc_samples; ++ j){
    //beta Update
    beta.col(j) = beta_update(n,
                              p,
-                             q,
                              m,
                              p_x,
                              x, 
@@ -270,46 +271,57 @@ for(int j = 1; j < mcmc_samples; ++ j){
                              sigma2_beta,
                              w,
                              gamma,
-                             Lambda[j-1],
-                             eta_full);
+                             eta_full,
+                             risk_sum);
    
-   //Lambda Update
-   arma::mat Lambda_temp = Lambda[j-1];
-   int counter = 0;
-   for(int k = 0; k < q; ++ k){
+   //lambda Update
+   arma::mat lambda_temp = lambda[j-1];
+   for(int k = 0; k < m; ++ k){
      
-      Rcpp::List Lambda_output = Lambda_update(Lambda_star.col(k),
-                                               Lambda_temp,
+      Rcpp::List lambda_output = lambda_update(lambda_star,
+                                               lambda_temp,
                                                k,
+                                               n,
                                                p,
-                                               q,
                                                m,
                                                x,
                                                z,
-                                               alpha_Lambda.col(k),
+                                               alpha_lambda.col(k),
                                                w,
                                                gamma,
                                                beta.col(j),
+                                               rho(j-1),
                                                eta_full,
-                                               metrop_var_Lambda.col(k),
-                                               acctot_Lambda.col(k));
+                                               risk_sum,
+                                               metrop_var_lambda.col(k),
+                                               acctot_lambda.col(k));
      
-      Lambda_star.col(k) = Rcpp::as<arma::vec>(Lambda_output[0]);
-      Lambda_temp.col(k) = Rcpp::as<arma::vec>(Lambda_output[1]);
-      acctot_Lambda.col(k) = Rcpp::as<arma::vec>(Lambda_output[2]);
+      risk_sum.col(k) = Rcpp::as<arma::vec>(lambda_output[0]);
+      lambda_star.col(k) = Rcpp::as<arma::vec>(lambda_output[1]);
+      lambda_temp.col(k) = Rcpp::as<arma::vec>(lambda_output[2]);
+      acctot_lambda.col(k) = Rcpp::as<arma::vec>(lambda_output[3]);
       
-      acctot_Lambda_vec.subvec((0 + counter), (p - 1 - k + counter)) = acctot_Lambda.col(k).subvec(k, (p - 1));
-      counter = counter + 
-                (p - k);
-      
+      acctot_lambda_vec.subvec(p*k, (p*(k + 1) - 1)) = acctot_lambda.col(k);
      
       }
-   Lambda[j] = Lambda_temp;
+   lambda[j] = lambda_temp;
+   
+   //rho Update
+   //Rcpp::List rho_output = rho_update(rho(j-1),
+   //                                   p,
+   //                                   m,
+   //                                   alpha_lambda,
+   //                                   lambda_star,
+   //                                   metrop_var_rho_trans,
+   //                                   acctot_rho_trans);
+   
+   //rho(j) = Rcpp::as<double>(rho_output[0]);
+   //acctot_rho_trans = Rcpp::as<double>(rho_output[1]);
    
    //delta Update
-   Rcpp::List delta_output = delta_update(delta[j-1],
+   Rcpp::List delta_output = delta_update(delta.col(j-1),
+                                          n,
                                           p,
-                                          q,
                                           m,
                                           y,
                                           x,
@@ -317,20 +329,20 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                           w,
                                           gamma,
                                           beta.col(j),
-                                          Lambda[j],
                                           w1.col(j-1),
                                           w2.col(j-1),
                                           A11(j-1),
                                           A22(j-1),
-                                          A21(j-1));
+                                          A21(j-1),
+                                          eta_full,
+                                          risk_sum);
         
-   delta[j] = Rcpp::as<arma::mat>(delta_output[0]);
+   delta.col(j) = Rcpp::as<arma::vec>(delta_output[0]);
    eta_full = Rcpp::as<arma::vec>(delta_output[1]);
    
    //delta_star Update
-   arma::mat delta_star = delta_star_update(q,
-                                            m,
-                                            delta[j],
+   arma::vec delta_star = delta_star_update(m,
+                                            delta.col(j),
                                             w1.col(j-1),
                                             w2.col(j-1),
                                             A22(j-1),
@@ -339,20 +351,19 @@ for(int j = 1; j < mcmc_samples; ++ j){
    //w1 Update
    Rcpp::List w1_output = w1_update(n,
                                     p,
-                                    q,
                                     m,
                                     x,
                                     z,
                                     w,
                                     gamma,
                                     beta.col(j),
-                                    Lambda[j],
-                                    delta[j],
+                                    delta.col(j),
                                     delta_star,
                                     w2.col(j-1),
                                     A11(j-1),
                                     A22(j-1),
                                     A21(j-1),
+                                    risk_sum,
                                     temporal_corr_info1[0]);
    
    w1.col(j) = Rcpp::as<arma::vec>(w1_output[0]);
@@ -360,7 +371,6 @@ for(int j = 1; j < mcmc_samples; ++ j){
    
    //w2 Update
    w2.col(j) = w2_update(p,
-                         q,
                          m,
                          z,
                          delta_star,
@@ -371,8 +381,8 @@ for(int j = 1; j < mcmc_samples; ++ j){
    
    //A11 Update
    Rcpp::List A11_output = A11_update(A11(j-1),
+                                      n,
                                       p,
-                                      q,
                                       m,
                                       x,
                                       z,
@@ -380,9 +390,9 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                       w,
                                       gamma,
                                       beta.col(j),
-                                      Lambda[j],
-                                      delta[j],
+                                      delta.col(j),
                                       w1.col(j),
+                                      risk_sum,
                                       metrop_var_A11_trans,
                                       acctot_A11_trans);
    
@@ -392,7 +402,6 @@ for(int j = 1; j < mcmc_samples; ++ j){
    
    //A22 Update
    Rcpp::List A22_output = A22_update(A22(j-1),
-                                      q,
                                       m,
                                       sigma2_A,
                                       delta_star,
@@ -406,8 +415,7 @@ for(int j = 1; j < mcmc_samples; ++ j){
    acctot_A22_trans = Rcpp::as<double>(A22_output[1]);
    
    //A21 Update
-   A21(j) = A21_update(q,
-                       sigma2_A,
+   A21(j) = A21_update(sigma2_A,
                        delta_star,
                        w1.col(j),
                        w2.col(j),
@@ -443,6 +451,7 @@ for(int j = 1; j < mcmc_samples; ++ j){
   
    //neg_two_loglike Update
    neg_two_loglike(j) = neg_two_loglike_update(n,
+                                               p,
                                                m,
                                                y,
                                                x,
@@ -450,23 +459,26 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                                likelihood_indicator,
                                                sigma2_epsilon(j),
                                                beta.col(j),
-                                               Lambda[j],
-                                               eta_full);
+                                               eta_full,
+                                               risk_sum);
    
    //Progress
    if((j + 1) % 10 == 0){ 
      Rcpp::checkUserInterrupt();
      }
-  
+   
    if(((j + 1) % int(round(mcmc_samples*0.10)) == 0)){
      
      double completion = round(100*((j + 1)/(double)mcmc_samples));
      Rcpp::Rcout << "Progress: " << completion << "%" << std::endl;
      
-     if((q == 1) & (p == 2)){
+     if(p == 2){
        
-       double accrate_Lambda_min = round(100*(min(acctot_Lambda_vec)/(double)j));
-       Rcpp::Rcout << "Lambda Acceptance: " << accrate_Lambda_min << "%" << std::endl;
+       double accrate_lambda_min = round(100*(min(acctot_lambda_vec)/(double)j));
+       Rcpp::Rcout << "lambda Acceptance: " << accrate_lambda_min << "%" << std::endl;
+       
+       double accrate_rho_trans = round(100*(min(acctot_rho_trans)/(double)j));
+       Rcpp::Rcout << "rho Acceptance: " << accrate_rho_trans << "%" << std::endl;
        
        double accrate_A11_trans = round(100*(min(acctot_A11_trans)/(double)j));
        Rcpp::Rcout << "A11 Acceptance: " << accrate_A11_trans << "%" << std::endl;
@@ -482,15 +494,18 @@ for(int j = 1; j < mcmc_samples; ++ j){
        
        Rcpp::Rcout << "***********************" << std::endl;
        
-     }
+       }
     
-     if((q > 1) | (p > 2)){
+     if(p > 2){
        
-       double accrate_Lambda_min = round(100*(min(acctot_Lambda_vec)/(double)j));
-       Rcpp::Rcout << "Lambda Acceptance (min): " << accrate_Lambda_min << "%" << std::endl;
+       double accrate_lambda_min = round(100*(min(acctot_lambda_vec)/(double)j));
+       Rcpp::Rcout << "lambda Acceptance (min): " << accrate_lambda_min << "%" << std::endl;
        
-       double accrate_Lambda_max = round(100*(max(acctot_Lambda_vec)/(double)j));
-       Rcpp::Rcout << "Lambda Acceptance (max): " << accrate_Lambda_max << "%" << std::endl;
+       double accrate_lambda_max = round(100*(max(acctot_lambda_vec)/(double)j));
+       Rcpp::Rcout << "lambda Acceptance (max): " << accrate_lambda_max << "%" << std::endl;
+       
+       double accrate_rho_trans = round(100*(min(acctot_rho_trans)/(double)j));
+       Rcpp::Rcout << "rho Acceptance: " << accrate_rho_trans << "%" << std::endl;
        
        double accrate_A11_trans = round(100*(min(acctot_A11_trans)/(double)j));
        Rcpp::Rcout << "A11 Acceptance: " << accrate_A11_trans << "%" << std::endl;
@@ -514,7 +529,8 @@ for(int j = 1; j < mcmc_samples; ++ j){
        
 return Rcpp::List::create(Rcpp::Named("sigma2_epsilon") = sigma2_epsilon,
                           Rcpp::Named("beta") = beta,
-                          Rcpp::Named("Lambda") = Lambda,
+                          Rcpp::Named("lambda") = lambda,
+                          Rcpp::Named("rho") = rho,
                           Rcpp::Named("delta") = delta,
                           Rcpp::Named("w1") = w1,
                           Rcpp::Named("w2") = w2,
@@ -524,7 +540,7 @@ return Rcpp::List::create(Rcpp::Named("sigma2_epsilon") = sigma2_epsilon,
                           Rcpp::Named("phi1") = phi1,
                           Rcpp::Named("phi2") = phi2,
                           Rcpp::Named("neg_two_loglike") = neg_two_loglike,
-                          Rcpp::Named("acctot_Lambda") = acctot_Lambda,
+                          Rcpp::Named("acctot_lambda") = acctot_lambda,
                           Rcpp::Named("acctot_A11_trans") = acctot_A11_trans,
                           Rcpp::Named("acctot_A22_trans") = acctot_A22_trans,
                           Rcpp::Named("acctot_phi1_trans") = acctot_phi1_trans,

@@ -7,6 +7,7 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 
 double neg_two_loglike_update(int n,
+                              int p,
                               int m,
                               arma::vec y,
                               arma::mat x,
@@ -14,14 +15,14 @@ double neg_two_loglike_update(int n,
                               int likelihood_indicator,
                               double sigma2_epsilon,
                               arma::vec beta,
-                              arma::mat Lambda,
-                              arma::vec eta_full){
+                              arma::vec eta_full,
+                              arma::mat risk_sum){
 
 arma::mat ident(m, m); ident.eye();
 arma::vec dens(n); dens.fill(0.00);
 
 arma::vec mu = x*beta + 
-               z*((kron(ident, Lambda))*eta_full);
+               risk_sum*eta_full;
 
 if(likelihood_indicator == 0){
   

@@ -8,7 +8,6 @@ using namespace Rcpp;
 
 arma::vec beta_update(int n,
                       int p,
-                      int q,
                       int m,
                       int p_x,
                       arma::mat x, 
@@ -16,8 +15,8 @@ arma::vec beta_update(int n,
                       double sigma2_beta,
                       arma::vec w,
                       arma::vec gamma,
-                      arma::mat Lambda_old,
-                      arma::vec eta_full){
+                      arma::vec eta_full,
+                      arma::mat risk_sum){
 
 arma::mat ident(m, m); ident.eye();
 arma::mat w_mat(n, p_x);
@@ -30,7 +29,7 @@ arma::mat x_trans = trans(x);
 arma::mat cov_beta = inv_sympd(x_trans*(w_mat%x) + 
                                (1.00/sigma2_beta)*eye(p_x, p_x));
 
-arma::vec mean_beta = cov_beta*(x_trans*(w%(gamma - z*((kron(ident, Lambda_old))*eta_full))));
+arma::vec mean_beta = cov_beta*(x_trans*(w%(gamma - risk_sum*eta_full)));
 
 arma::mat ind_norms = arma::randn(1, 
                                   p_x);
