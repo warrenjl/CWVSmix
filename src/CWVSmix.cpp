@@ -12,7 +12,6 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    arma::mat x,
                    arma::mat z,
                    arma::mat metrop_var_lambda,
-                   double metrop_var_rho_trans,
                    double metrop_var_A11_trans,
                    double metrop_var_A22_trans,
                    double metrop_var_phi1_trans,
@@ -30,7 +29,6 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    Rcpp::Nullable<double> sigma2_epsilon_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericVector> beta_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericMatrix> lambda_init = R_NilValue,
-                   Rcpp::Nullable<double> rho_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericVector> delta_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericVector> w1_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericVector> w2_init = R_NilValue,
@@ -55,7 +53,6 @@ for(int j = 0; j < mcmc_samples; ++ j){
    lambda[j] = lambda_temp;
    
    }
-arma::vec rho(mcmc_samples); rho.fill(0.00);
 arma::mat delta(m, mcmc_samples);
 arma::mat w1(m, mcmc_samples); w1.fill(0.00);
 arma::mat w2(m, mcmc_samples); w2.fill(0.00);
@@ -140,11 +137,6 @@ if(lambda_init.isNotNull()){
 lambda[0] = lambda_temp;
 arma::mat lambda_star = lambda_temp;
 
-rho(0) = 0.50;
-if(rho_init.isNotNull()){
-  rho(0) = Rcpp::as<double>(rho_init);
-  }
-
 delta.col(0).fill(1.00);
 if(delta_init.isNotNull()){
   delta.col(0) = Rcpp::as<arma::vec>(delta_init);
@@ -213,7 +205,6 @@ neg_two_loglike(0) = neg_two_loglike_update(n,
 //Metropolis Settings
 arma::mat acctot_lambda(p, m); acctot_lambda.fill(0);
 arma::vec acctot_lambda_vec(p*m); acctot_lambda_vec.fill(0);
-int acctot_rho_trans = 0;
 int acctot_A11_trans = 0;
 int acctot_A22_trans = 0; 
 int acctot_phi1_trans = 0;
@@ -290,7 +281,6 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                                w,
                                                gamma,
                                                beta.col(j),
-                                               rho(j-1),
                                                eta_full,
                                                risk_sum,
                                                metrop_var_lambda.col(k),
@@ -305,18 +295,6 @@ for(int j = 1; j < mcmc_samples; ++ j){
      
       }
    lambda[j] = lambda_temp;
-   
-   //rho Update
-   //Rcpp::List rho_output = rho_update(rho(j-1),
-   //                                   p,
-   //                                   m,
-   //                                   alpha_lambda,
-   //                                   lambda_star,
-   //                                   metrop_var_rho_trans,
-   //                                   acctot_rho_trans);
-   
-   //rho(j) = Rcpp::as<double>(rho_output[0]);
-   //acctot_rho_trans = Rcpp::as<double>(rho_output[1]);
    
    //delta Update
    Rcpp::List delta_output = delta_update(delta.col(j-1),
@@ -471,57 +449,26 @@ for(int j = 1; j < mcmc_samples; ++ j){
      
      double completion = round(100*((j + 1)/(double)mcmc_samples));
      Rcpp::Rcout << "Progress: " << completion << "%" << std::endl;
-     
-     if(p == 2){
        
-       double accrate_lambda_min = round(100*(min(acctot_lambda_vec)/(double)j));
-       Rcpp::Rcout << "lambda Acceptance: " << accrate_lambda_min << "%" << std::endl;
-       
-       double accrate_rho_trans = round(100*(min(acctot_rho_trans)/(double)j));
-       Rcpp::Rcout << "rho Acceptance: " << accrate_rho_trans << "%" << std::endl;
-       
-       double accrate_A11_trans = round(100*(min(acctot_A11_trans)/(double)j));
-       Rcpp::Rcout << "A11 Acceptance: " << accrate_A11_trans << "%" << std::endl;
-       
-       double accrate_A22_trans = round(100*(min(acctot_A22_trans)/(double)j));
-       Rcpp::Rcout << "A22 Acceptance: " << accrate_A22_trans << "%" << std::endl;
-       
-       double accrate_phi1_trans = round(100*(min(acctot_phi1_trans)/(double)j));
-       Rcpp::Rcout << "phi1 Acceptance: " << accrate_phi1_trans << "%" << std::endl;
-       
-       double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
-       Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
-       
-       Rcpp::Rcout << "***********************" << std::endl;
-       
-       }
+     double accrate_lambda_min = round(100*(min(acctot_lambda_vec)/(double)j));
+     Rcpp::Rcout << "lambda Acceptance (min): " << accrate_lambda_min << "%" << std::endl;
     
-     if(p > 2){
+     double accrate_lambda_max = round(100*(max(acctot_lambda_vec)/(double)j));
+     Rcpp::Rcout << "lambda Acceptance (max): " << accrate_lambda_max << "%" << std::endl;
        
-       double accrate_lambda_min = round(100*(min(acctot_lambda_vec)/(double)j));
-       Rcpp::Rcout << "lambda Acceptance (min): " << accrate_lambda_min << "%" << std::endl;
+     double accrate_A11_trans = round(100*(min(acctot_A11_trans)/(double)j));
+     Rcpp::Rcout << "A11 Acceptance: " << accrate_A11_trans << "%" << std::endl;
        
-       double accrate_lambda_max = round(100*(max(acctot_lambda_vec)/(double)j));
-       Rcpp::Rcout << "lambda Acceptance (max): " << accrate_lambda_max << "%" << std::endl;
+     double accrate_A22_trans = round(100*(min(acctot_A22_trans)/(double)j));
+     Rcpp::Rcout << "A22 Acceptance: " << accrate_A22_trans << "%" << std::endl;
        
-       double accrate_rho_trans = round(100*(min(acctot_rho_trans)/(double)j));
-       Rcpp::Rcout << "rho Acceptance: " << accrate_rho_trans << "%" << std::endl;
+     double accrate_phi1_trans = round(100*(min(acctot_phi1_trans)/(double)j));
+     Rcpp::Rcout << "phi1 Acceptance: " << accrate_phi1_trans << "%" << std::endl;
        
-       double accrate_A11_trans = round(100*(min(acctot_A11_trans)/(double)j));
-       Rcpp::Rcout << "A11 Acceptance: " << accrate_A11_trans << "%" << std::endl;
+     double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
+     Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
        
-       double accrate_A22_trans = round(100*(min(acctot_A22_trans)/(double)j));
-       Rcpp::Rcout << "A22 Acceptance: " << accrate_A22_trans << "%" << std::endl;
-       
-       double accrate_phi1_trans = round(100*(min(acctot_phi1_trans)/(double)j));
-       Rcpp::Rcout << "phi1 Acceptance: " << accrate_phi1_trans << "%" << std::endl;
-       
-       double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
-       Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
-       
-       Rcpp::Rcout << "*****************************" << std::endl;
-      
-       }
+     Rcpp::Rcout << "****************************" << std::endl;
     
      }
   
@@ -530,7 +477,6 @@ for(int j = 1; j < mcmc_samples; ++ j){
 return Rcpp::List::create(Rcpp::Named("sigma2_epsilon") = sigma2_epsilon,
                           Rcpp::Named("beta") = beta,
                           Rcpp::Named("lambda") = lambda,
-                          Rcpp::Named("rho") = rho,
                           Rcpp::Named("delta") = delta,
                           Rcpp::Named("w1") = w1,
                           Rcpp::Named("w2") = w2,
