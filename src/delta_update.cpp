@@ -91,5 +91,3 @@ return Rcpp::List::create(Rcpp::Named("delta") = delta,
 }
 
 
-
-

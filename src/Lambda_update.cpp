@@ -18,9 +18,10 @@ Rcpp::List lambda_update(arma::mat lambda_star,
                          arma::vec w,
                          arma::vec gamma,
                          arma::vec beta,
+                         double rho_old,
                          arma::vec eta_full,
                          arma::mat risk_sum,
-                         arma::vec metrop_var_lambda,
+                         arma::vec metrop_var_lambda_trans,
                          arma::vec acctot_lambda){
   
 arma::mat ident(m, m); ident.eye();
@@ -38,33 +39,33 @@ for(int j = 0; j < p; ++ j){
    /*Second*/
    if((ind > 0) & (ind < (m - 1))){
      second = -0.50*dot((gamma - x*beta - risk_sum_old*eta_full), w%(gamma - x*beta - risk_sum_old*eta_full)) +
-              log(lambda_star_old(j, ind))*(alpha_lambda(j) + lambda_star_old(j, (ind - 1))) +
+              log(lambda_star_old(j, ind))*(alpha_lambda(j) + rho_old*lambda_star_old(j, (ind - 1))) +
               -lambda_star_old(j, ind) +
-              -lgamma(alpha_lambda(j) + lambda_star_old(j, (ind - 1))) +
-              log(lambda_star_old(j, (ind + 1)))*(alpha_lambda(j) + lambda_star_old(j, ind)) +
+              -lgamma(alpha_lambda(j) + rho_old*lambda_star_old(j, (ind - 1))) +
+              log(lambda_star_old(j, (ind + 1)))*(alpha_lambda(j) + rho_old*lambda_star_old(j, ind)) +
               -lambda_star_old(j, (ind + 1)) +
-              -lgamma(alpha_lambda(j) + lambda_star_old(j, ind));
+              -lgamma(alpha_lambda(j) + rho_old*lambda_star_old(j, ind));
      }
    
    if(ind == (m - 1)){
      second = -0.50*dot((gamma - x*beta - risk_sum_old*eta_full), w%(gamma - x*beta - risk_sum_old*eta_full)) +
-              log(lambda_star_old(j, ind))*(alpha_lambda(j) + lambda_star_old(j, (ind - 1))) +
+              log(lambda_star_old(j, ind))*(alpha_lambda(j) + rho_old*lambda_star_old(j, (ind - 1))) +
               -lambda_star_old(j, ind) +
-              -lgamma(alpha_lambda(j) + lambda_star_old(j, (ind - 1)));
+              -lgamma(alpha_lambda(j) + rho_old*lambda_star_old(j, (ind - 1)));
      }
    
    if(ind == 0){
      second = -0.50*dot((gamma - x*beta - risk_sum_old*eta_full), w%(gamma - x*beta - risk_sum_old*eta_full)) +
               log(lambda_star_old(j, ind))*alpha_lambda(j) +
               -lambda_star_old(j, ind) +
-              log(lambda_star_old(j, (ind + 1)))*(alpha_lambda(j) + lambda_star_old(j, ind)) +
+              log(lambda_star_old(j, (ind + 1)))*(alpha_lambda(j) + rho_old*lambda_star_old(j, ind)) +
               -lambda_star_old(j, (ind + 1)) +
-              -lgamma(alpha_lambda(j) + lambda_star_old(j, ind));
+              -lgamma(alpha_lambda(j) + rho_old*lambda_star_old(j, ind));
      }
   
    /*First*/
    lambda_star(j, ind) = exp(R::rnorm(log(lambda_star_old(j, ind)),
-                                      sqrt(metrop_var_lambda(j))));
+                                      sqrt(metrop_var_lambda_trans(j))));
 
    for(int k = 0; k < p; ++ k){
       lambda(k, ind) = lambda_star(k, ind)/sum(lambda_star.col(ind));
@@ -73,28 +74,28 @@ for(int j = 0; j < p; ++ j){
    
    if((ind > 0) & (ind < (m - 1))){
      first = -0.50*dot((gamma - x*beta - risk_sum*eta_full), w%(gamma - x*beta - risk_sum*eta_full)) + 
-             log(lambda_star(j, ind))*(alpha_lambda(j) + lambda_star(j, (ind - 1))) +
+             log(lambda_star(j, ind))*(alpha_lambda(j) + rho_old*lambda_star(j, (ind - 1))) +
              -lambda_star(j, ind) +
-             -lgamma(alpha_lambda(j) + lambda_star(j, (ind - 1))) +
-             log(lambda_star(j, (ind + 1)))*(alpha_lambda(j) + lambda_star(j, ind)) +
+             -lgamma(alpha_lambda(j) + rho_old*lambda_star(j, (ind - 1))) +
+             log(lambda_star(j, (ind + 1)))*(alpha_lambda(j) + rho_old*lambda_star(j, ind)) +
              -lambda_star(j, (ind + 1)) +
-             -lgamma(alpha_lambda(j) + lambda_star(j, ind));
+             -lgamma(alpha_lambda(j) + rho_old*lambda_star(j, ind));
      }
    
    if(ind == (m - 1)){
      first = -0.50*dot((gamma - x*beta - risk_sum*eta_full), w%(gamma - x*beta - risk_sum*eta_full)) +
-             log(lambda_star(j, ind))*(alpha_lambda(j) + lambda_star(j, (ind - 1))) +
+             log(lambda_star(j, ind))*(alpha_lambda(j) + rho_old*lambda_star(j, (ind - 1))) +
              -lambda_star(j, ind) +
-             -lgamma(alpha_lambda(j) + lambda_star(j, (ind - 1)));
+             -lgamma(alpha_lambda(j) + rho_old*lambda_star(j, (ind - 1)));
      }
    
    if(ind == 0){
      first = -0.50*dot((gamma - x*beta - risk_sum*eta_full), w%(gamma - x*beta - risk_sum*eta_full)) +
              log(lambda_star(j, ind))*alpha_lambda(j) +
              -lambda_star(j, ind) +
-             log(lambda_star(j, (ind + 1)))*(alpha_lambda(j) + lambda_star(j, ind)) +
+             log(lambda_star(j, (ind + 1)))*(alpha_lambda(j) + rho_old*lambda_star(j, ind)) +
              -lambda_star(j, (ind + 1)) +
-             -lgamma(alpha_lambda(j) + lambda_star(j, ind));
+             -lgamma(alpha_lambda(j) + rho_old*lambda_star(j, ind));
      }
                
    /*Decision*/
@@ -120,4 +121,3 @@ return Rcpp::List::create(Rcpp::Named("risk_sum") = risk_sum.col(ind),
 
 }
                  
-  

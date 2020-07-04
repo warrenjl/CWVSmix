@@ -39,5 +39,3 @@ return(sigma2_epsilon);
 
 
 
-
-

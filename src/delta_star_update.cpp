@@ -42,4 +42,3 @@ return(delta_star);
 }
 
 
-

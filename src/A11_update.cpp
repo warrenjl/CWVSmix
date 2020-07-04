@@ -71,5 +71,3 @@ return Rcpp::List::create(Rcpp::Named("A11") = A11,
 
 }
 
-
-

@@ -97,14 +97,3 @@ return neg_two_loglike;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
