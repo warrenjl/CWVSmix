@@ -9,59 +9,60 @@ using namespace Rcpp;
 Rcpp::List rho_update(double rho_old,
                       int p,
                       int m,
-                      arma::mat alpha_lambda,
+                      double alpha_rho,
+                      double beta_rho,
                       arma::mat lambda_star,
+                      Rcpp::List temporal_corr_info,
                       double metrop_var_rho_trans,
                       int acctot_rho_trans){
-
-double second = 0.00;
-double first = 0.00;
-
+  
 /*Second*/
-double rho_trans_old = log(rho_old/(1 - rho_old));
+Rcpp::List temporal_corr_info_old = temporal_corr_info;
+arma::mat temporal_corr_inv_old = temporal_corr_info_old[0];
+double log_deter_old = temporal_corr_info_old[1];
+double rho_trans_old = log(rho_old);
 
-for(int j = 1; j < m; ++ j){
-   for(int k = 0; k < p; ++ k){
-      second = second +
-               -lgamma(alpha_lambda(k, j) + rho_old*lambda_star(k, (j-1))) +
-               (alpha_lambda(k, j) + rho_old*lambda_star(k, (j-1)) - 1)*log(lambda_star(k,j)) +
-               -lambda_star(k,j);
-      }
+arma::vec lambda_star_vec(p*m); lambda_star_vec.fill(0.00);
+for(int j = 0; j < m; ++ j){
+   lambda_star_vec.subvec((p*j), (p*(j + 1) - 1)) = lambda_star.col(j);
    }
-second = second +
-         rho_trans_old + 
-         -2*log(1 + exp(rho_trans_old));
-         
+
+double second = -0.50*p*log_deter_old + 
+                -0.50*dot(lambda_star_vec, (kron(temporal_corr_inv_old, eye(p, p))*lambda_star_vec)) + 
+                alpha_rho*rho_trans_old +
+                -beta_rho*exp(rho_trans_old);
+
 /*First*/
 double rho_trans = R::rnorm(rho_trans_old, 
                             sqrt(metrop_var_rho_trans));
-double rho = 1/(1 + exp(-rho_trans));
+double rho = exp(rho_trans);
+temporal_corr_info = temporal_corr_fun(m, 
+                                       rho);
+arma::mat temporal_corr_inv = temporal_corr_info[0];
+double log_deter = temporal_corr_info[1];
 
-for(int j = 1; j < m; ++ j){
-   for(int k = 0; k < p; ++ k){
-      first = first +
-              -lgamma(alpha_lambda(k, j) + rho*lambda_star(k, (j-1))) +
-              (alpha_lambda(k, j) + rho*lambda_star(k, (j-1)) - 1)*log(lambda_star(k,j)) +
-              -lambda_star(k,j);
-      }
-   }
-first = first +
-        rho_trans + 
-        -2*log(1 + exp(rho_trans));
-  
+double first = -0.50*p*log_deter + 
+               -0.50*dot(lambda_star_vec, (kron(temporal_corr_inv, eye(p, p))*lambda_star_vec)) + 
+               alpha_rho*rho_trans +
+               -beta_rho*exp(rho_trans);
+
 /*Decision*/
 double ratio = exp(first - second);   
 int acc = 1;
 if(ratio < R::runif(0.00, 1.00)){
-     
+  
   rho = rho_old;
+  temporal_corr_info = temporal_corr_info_old;
   acc = 0;
-     
+  
   }
 acctot_rho_trans = acctot_rho_trans + 
                    acc;
 
 return Rcpp::List::create(Rcpp::Named("rho") = rho,
-                          Rcpp::Named("acctot_rho_trans") = acctot_rho_trans);
+                          Rcpp::Named("acctot_rho_trans") = acctot_rho_trans,
+                          Rcpp::Named("temporal_corr_info") = temporal_corr_info);
 
 }
+                 
+  

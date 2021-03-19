@@ -18,7 +18,6 @@ arma::vec beta_update(int n,
                       arma::vec eta_full,
                       arma::mat risk_sum){
 
-arma::mat ident(m, m); ident.eye();
 arma::mat w_mat(n, p_x);
 for(int j = 0; j < p_x; ++ j){
    w_mat.col(j) = w;

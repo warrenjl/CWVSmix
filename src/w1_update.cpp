@@ -46,7 +46,8 @@ arma::mat cov_w1 = inv_sympd(cov_piece_trans*(w_mat%cov_piece) +
 arma::vec mean_w1 = cov_w1*(cov_piece_trans*(w%(gamma - x*beta)) + 
                             A21_old*delta_star_piece);
 
-arma::mat ind_norms = arma::randn(1, m);
+arma::mat ind_norms = arma::randn(1, 
+                                  m);
 arma::vec w1 = mean_w1 +                   
                trans(ind_norms*arma::chol(cov_w1));
 

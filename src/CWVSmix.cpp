@@ -11,17 +11,19 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    arma::vec y,
                    arma::mat x,
                    arma::mat z,
-                   arma::mat metrop_var_lambda_trans,
+                   arma::vec metrop_var_lambda_trans,
                    double metrop_var_rho_trans,
                    double metrop_var_A11_trans,
                    double metrop_var_A22_trans,
                    double metrop_var_phi1_trans,
                    double metrop_var_phi2_trans,
+                   int interaction_indicator,
                    int likelihood_indicator,
                    Rcpp::Nullable<double> a_sigma2_epsilon_prior = R_NilValue,
                    Rcpp::Nullable<double> b_sigma2_epsilon_prior = R_NilValue,
                    Rcpp::Nullable<double> sigma2_beta_prior = R_NilValue,
-                   Rcpp::Nullable<Rcpp::NumericMatrix> alpha_lambda_prior = R_NilValue,
+                   Rcpp::Nullable<double> alpha_rho_prior = R_NilValue,
+                   Rcpp::Nullable<double> beta_rho_prior = R_NilValue,
                    Rcpp::Nullable<double> sigma2_A_prior = R_NilValue,
                    Rcpp::Nullable<double> alpha_phi1_prior = R_NilValue,
                    Rcpp::Nullable<double> beta_phi1_prior = R_NilValue,
@@ -29,7 +31,6 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    Rcpp::Nullable<double> beta_phi2_prior = R_NilValue,
                    Rcpp::Nullable<double> sigma2_epsilon_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericVector> beta_init = R_NilValue,
-                   Rcpp::Nullable<Rcpp::NumericMatrix> lambda_init = R_NilValue,
                    Rcpp::Nullable<double> rho_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericVector> delta_init = R_NilValue,
                    Rcpp::Nullable<Rcpp::NumericVector> w1_init = R_NilValue,
@@ -45,6 +46,10 @@ int n = y.size();
 int m = z.n_cols/p;
 double max_time = (m - 1);
 int p_x = x.n_cols;
+int q = 0;
+if(interaction_indicator == 1){
+  q = (-1 + sqrt(1 + 8*p))/2;  //Solving for the Number of Main Effect Pollutants
+  } 
 
 arma::vec sigma2_epsilon(mcmc_samples); sigma2_epsilon.fill(0.00);
 arma::mat beta(p_x, mcmc_samples); beta.fill(0.00);
@@ -82,14 +87,14 @@ if(sigma2_beta_prior.isNotNull()){
   sigma2_beta = Rcpp::as<double>(sigma2_beta_prior);
   }
 
-arma::mat alpha_lambda(p, m); alpha_lambda.fill(0.00);
-for(int j = 0; j < p; ++ j){
-   for(int k = 0; k < m; ++ k){
-      alpha_lambda(j, k) = 0.10;
-      }
-   }
-if(alpha_lambda_prior.isNotNull()){
-  alpha_lambda = Rcpp::as<arma::mat>(alpha_lambda_prior);
+double alpha_rho = 1.00;  
+if(alpha_rho_prior.isNotNull()){
+  alpha_rho = Rcpp::as<double>(alpha_rho_prior);
+  }
+
+double beta_rho = 1.00;
+if(beta_rho_prior.isNotNull()){
+  beta_rho = Rcpp::as<double>(beta_rho_prior);
   }
 
 double sigma2_A = 1.00;
@@ -128,22 +133,61 @@ if(beta_init.isNotNull()){
   beta.col(0) = Rcpp::as<arma::vec>(beta_init);
   }
 
-arma::mat lambda_temp(p, m); lambda_temp.fill(0.00);
-for(int j = 0; j < p; ++ j){
-   for(int k = 0; k < m; ++ k){
-      lambda_temp(j, k) = alpha_lambda(j, k)/sum(alpha_lambda.col(k));
-      }
-   }
-if(lambda_init.isNotNull()){
-  lambda_temp = Rcpp::as<arma::mat>(lambda_init);
-  }
-lambda[0] = lambda_temp;
-arma::mat lambda_star = lambda_temp;
+arma::mat lambda_star = arma::randn(p, m);
+arma::mat lambda_star_max(p, m); lambda_star_max.fill(0.00);
 
-rho(0) = 0.50;
-if(rho_init.isNotNull()){
-  rho(0) = Rcpp::as<double>(rho_init);
+if(interaction_indicator == 0){
+  for(int j = 0; j < p; ++ j){
+     for(int k = 0; k < m; ++ k){
+        lambda_star_max(j, k) = (lambda_star(j, k) > 0.00)*lambda_star(j, k);
+        }   
+     }
   }
+
+if(interaction_indicator == 1){
+   
+   for(int j = 0; j < q; ++ j){
+      for(int k = 0; k < m; ++ k){
+         lambda_star_max(j, k) = (lambda_star(j, k) > 0.00)*lambda_star(j, k);
+         }   
+      }
+   
+   int counter = q;
+   for(int j = 0; j < (q - 1); ++ j){
+      for(int k = (j + 1); k < q; ++ k){
+         
+         for(int l = 0; l < m; ++ l){
+            lambda_star_max(counter, l) = (lambda_star(j, l) > 0.00)*(lambda_star(k, l) > 0.00)*(lambda_star(counter, l) > 0.00)*lambda_star(counter, l);
+            }
+         
+         counter = counter + 
+                   1;
+         
+         }
+      }
+   
+   }
+
+arma::mat lambda_temp(p, m); lambda_temp.fill(0.00);
+for(int j = 0; j < m; ++ j){
+
+   if(sum(lambda_star_max.col(j)) > 0.00){
+     for(int k = 0; k < p; ++ k){
+        lambda_temp(k, j) = lambda_star_max(k, j)/sum(lambda_star_max.col(j));
+        }
+     }
+   
+   if(sum(lambda_star_max.col(j)) == 0.00){
+     lambda_temp.col(j).fill(1.00/p);
+     }
+   
+   }
+lambda[0] = lambda_temp;
+
+rho(0) = -log(0.05)/max_time;  //Effective range equal to largest temporal distance in dataset (strong temporal correlation)
+if(rho_init.isNotNull()){
+   rho(0) = Rcpp::as<double>(rho_init);
+   }
 
 delta.col(0).fill(1.00);
 if(delta_init.isNotNull()){
@@ -185,6 +229,9 @@ if(phi2_init.isNotNull()){
   phi2(0) = Rcpp::as<double>(phi2_init);
   }
 
+Rcpp::List temporal_corr_info = temporal_corr_fun(m, 
+                                                  rho(0));
+
 Rcpp::List temporal_corr_info1 = temporal_corr_fun(m, 
                                                    phi1(0));
   
@@ -195,7 +242,7 @@ arma::vec eta_full = A11(0)*(w1.col(0)%delta.col(0));
 
 arma::mat risk_sum(n, m); risk_sum.fill(0.00);
 for(int j = 0; j < m; ++ j){
-   risk_sum.col(j) = z.cols(p*j, (p*(j + 1) - 1))*Rcpp::as<arma::mat>(lambda[0]).col(j);
+   risk_sum.col(j) = z.cols((p*j), (p*(j + 1) - 1))*Rcpp::as<arma::mat>(lambda[0]).col(j);
    }
 
 neg_two_loglike(0) = neg_two_loglike_update(n,
@@ -211,8 +258,7 @@ neg_two_loglike(0) = neg_two_loglike_update(n,
                                             risk_sum);
 
 //Metropolis Settings
-arma::mat acctot_lambda(p, m); acctot_lambda.fill(0);
-arma::vec acctot_lambda_vec(p*m); acctot_lambda_vec.fill(0);
+arma::vec acctot_lambda(m); acctot_lambda.fill(0);
 int acctot_rho_trans = 0;
 int acctot_A11_trans = 0;
 int acctot_A22_trans = 0; 
@@ -281,28 +327,26 @@ for(int j = 1; j < mcmc_samples; ++ j){
       Rcpp::List lambda_output = lambda_update(lambda_star,
                                                lambda_temp,
                                                k,
-                                               n,
                                                p,
+                                               q,
                                                m,
                                                x,
                                                z,
-                                               alpha_lambda.col(k),
+                                               interaction_indicator,
                                                w,
                                                gamma,
                                                beta.col(j),
-                                               rho(j-1),
                                                eta_full,
                                                risk_sum,
-                                               metrop_var_lambda_trans.col(k),
-                                               acctot_lambda.col(k));
+                                               temporal_corr_info[0],
+                                               metrop_var_lambda_trans(k),
+                                               acctot_lambda(k));
      
       risk_sum.col(k) = Rcpp::as<arma::vec>(lambda_output[0]);
       lambda_star.col(k) = Rcpp::as<arma::vec>(lambda_output[1]);
       lambda_temp.col(k) = Rcpp::as<arma::vec>(lambda_output[2]);
-      acctot_lambda.col(k) = Rcpp::as<arma::vec>(lambda_output[3]);
+      acctot_lambda(k) = Rcpp::as<int>(lambda_output[3]);
       
-      acctot_lambda_vec.subvec(p*k, (p*(k + 1) - 1)) = acctot_lambda.col(k);
-     
       }
    lambda[j] = lambda_temp;
    
@@ -310,13 +354,16 @@ for(int j = 1; j < mcmc_samples; ++ j){
    Rcpp::List rho_output = rho_update(rho(j-1),
                                       p,
                                       m,
-                                      alpha_lambda,
+                                      alpha_rho,
+                                      beta_rho,
                                       lambda_star,
+                                      temporal_corr_info,
                                       metrop_var_rho_trans,
                                       acctot_rho_trans);
    
    rho(j) = Rcpp::as<double>(rho_output[0]);
-   acctot_rho_trans = Rcpp::as<double>(rho_output[1]);
+   acctot_rho_trans = Rcpp::as<int>(rho_output[1]);
+   temporal_corr_info = rho_output[2];
    
    //delta Update
    Rcpp::List delta_output = delta_update(delta.col(j-1),
@@ -472,57 +519,29 @@ for(int j = 1; j < mcmc_samples; ++ j){
      double completion = round(100*((j + 1)/(double)mcmc_samples));
      Rcpp::Rcout << "Progress: " << completion << "%" << std::endl;
      
-     if(p == 2){
+     double accrate_lambda_min = round(100*(min(acctot_lambda)/(double)j));
+     Rcpp::Rcout << "lambda Acceptance (min): " << accrate_lambda_min << "%" << std::endl;
        
-       double accrate_lambda_min = round(100*(min(acctot_lambda_vec)/(double)j));
-       Rcpp::Rcout << "lambda Acceptance: " << accrate_lambda_min << "%" << std::endl;
+     double accrate_lambda_max = round(100*(max(acctot_lambda)/(double)j));
+     Rcpp::Rcout << "lambda Acceptance (max): " << accrate_lambda_max << "%" << std::endl;
        
-       double accrate_rho_trans = round(100*(min(acctot_rho_trans)/(double)j));
-       Rcpp::Rcout << "rho Acceptance: " << accrate_rho_trans << "%" << std::endl;
+     double accrate_rho_trans = round(100*(min(acctot_rho_trans)/(double)j));
+     Rcpp::Rcout << "rho Acceptance: " << accrate_rho_trans << "%" << std::endl;
        
-       double accrate_A11_trans = round(100*(min(acctot_A11_trans)/(double)j));
-       Rcpp::Rcout << "A11 Acceptance: " << accrate_A11_trans << "%" << std::endl;
+     double accrate_A11_trans = round(100*(min(acctot_A11_trans)/(double)j));
+     Rcpp::Rcout << "A11 Acceptance: " << accrate_A11_trans << "%" << std::endl;
        
-       double accrate_A22_trans = round(100*(min(acctot_A22_trans)/(double)j));
-       Rcpp::Rcout << "A22 Acceptance: " << accrate_A22_trans << "%" << std::endl;
+     double accrate_A22_trans = round(100*(min(acctot_A22_trans)/(double)j));
+     Rcpp::Rcout << "A22 Acceptance: " << accrate_A22_trans << "%" << std::endl;
        
-       double accrate_phi1_trans = round(100*(min(acctot_phi1_trans)/(double)j));
-       Rcpp::Rcout << "phi1 Acceptance: " << accrate_phi1_trans << "%" << std::endl;
+     double accrate_phi1_trans = round(100*(min(acctot_phi1_trans)/(double)j));
+     Rcpp::Rcout << "phi1 Acceptance: " << accrate_phi1_trans << "%" << std::endl;
        
-       double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
-       Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
+     double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
+     Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
        
-       Rcpp::Rcout << "***********************" << std::endl;
-       
-       }
-    
-     if(p > 2){
-       
-       double accrate_lambda_min = round(100*(min(acctot_lambda_vec)/(double)j));
-       Rcpp::Rcout << "lambda Acceptance (min): " << accrate_lambda_min << "%" << std::endl;
-       
-       double accrate_lambda_max = round(100*(max(acctot_lambda_vec)/(double)j));
-       Rcpp::Rcout << "lambda Acceptance (max): " << accrate_lambda_max << "%" << std::endl;
-       
-       double accrate_rho_trans = round(100*(min(acctot_rho_trans)/(double)j));
-       Rcpp::Rcout << "rho Acceptance: " << accrate_rho_trans << "%" << std::endl;
-       
-       double accrate_A11_trans = round(100*(min(acctot_A11_trans)/(double)j));
-       Rcpp::Rcout << "A11 Acceptance: " << accrate_A11_trans << "%" << std::endl;
-       
-       double accrate_A22_trans = round(100*(min(acctot_A22_trans)/(double)j));
-       Rcpp::Rcout << "A22 Acceptance: " << accrate_A22_trans << "%" << std::endl;
-       
-       double accrate_phi1_trans = round(100*(min(acctot_phi1_trans)/(double)j));
-       Rcpp::Rcout << "phi1 Acceptance: " << accrate_phi1_trans << "%" << std::endl;
-       
-       double accrate_phi2_trans = round(100*(min(acctot_phi2_trans)/(double)j));
-       Rcpp::Rcout << "phi2 Acceptance: " << accrate_phi2_trans << "%" << std::endl;
-       
-       Rcpp::Rcout << "*****************************" << std::endl;
+     Rcpp::Rcout << "****************************" << std::endl;
       
-       }
-    
      }
   
    }

@@ -30,8 +30,8 @@ arma::vec mu = x*beta_old +
 double b_sigma2_epsilon_update = 0.50*dot((y - mu), (y - mu)) + 
                                  b_sigma2_epsilon;
 
-double sigma2_epsilon = 1/R::rgamma(a_sigma2_epsilon_update,
-                                    (1.00/b_sigma2_epsilon_update));
+double sigma2_epsilon = 1.00/R::rgamma(a_sigma2_epsilon_update,
+                                       (1.00/b_sigma2_epsilon_update));
 
 return(sigma2_epsilon);
 
