@@ -10,11 +10,9 @@ Rcpp::List lambda_update(arma::mat lambda_star,
                          arma::mat lambda_old,
                          int ind,
                          int p,
-                         int q,
                          int m,
                          arma::mat x,
                          arma::mat z,
-                         int interaction_indicator,
                          arma::vec w,
                          arma::vec gamma,
                          arma::vec beta,
@@ -47,45 +45,14 @@ second = -0.50*dot((gamma - x*beta - risk_sum_old*eta_full), w%(gamma - x*beta -
 /*First*/
 arma::vec lambda_star_max(p); lambda_star_max.fill(0.00);
   
-if(interaction_indicator == 0){
-    
-  for(int j = 0; j < p; ++ j){
+for(int j = 0; j < p; ++ j){
       
-     lambda_star(j, ind) = R::rnorm(lambda_star_old(j, ind),
-                                    sqrt(metrop_var_lambda_trans));
-     lambda_star_vec(p*ind + j) = lambda_star(j, ind);
-     lambda_star_max(j) = (lambda_star(j, ind) > 0.00)*lambda_star(j, ind);
+   lambda_star(j, ind) = R::rnorm(lambda_star_old(j, ind),
+                                  sqrt(metrop_var_lambda_trans));
+   lambda_star_vec(p*ind + j) = lambda_star(j, ind);
+   lambda_star_max(j) = (lambda_star(j, ind) > 0.00)*lambda_star(j, ind);
       
-     }
-     
-  }
-  
-if(interaction_indicator == 1){
-    
-  for(int j = 0; j < q; ++ j){
-      
-     lambda_star(j, ind) = R::rnorm(lambda_star_old(j, ind),
-                                    sqrt(metrop_var_lambda_trans));
-     lambda_star_vec(p*ind + j) = lambda_star(j, ind);
-     lambda_star_max(j) = (lambda_star(j, ind) > 0.00)*lambda_star(j, ind);
-      
-     }
-    
-  int counter = q;
-  for(int j = 0; j < (q - 1); ++ j){
-     for(int k = (j + 1); k < q; ++ k){
-        
-        lambda_star(counter, ind) = R::rnorm(lambda_star_old(counter, ind),
-                                             sqrt(metrop_var_lambda_trans));
-        lambda_star_vec(p*ind + counter) = lambda_star(counter, ind);
-        lambda_star_max(counter) = (lambda_star(j, ind) > 0.00)*(lambda_star(k, ind) > 0.00)*(lambda_star(counter, ind) > 0.00)*lambda_star(counter, ind);
-        counter = counter + 
-                  1;
-        
-        }
-     }
-    
-  }
+   }
   
 if(sum(lambda_star_max) > 0.00){
   for(int j = 0; j < p; ++ j){

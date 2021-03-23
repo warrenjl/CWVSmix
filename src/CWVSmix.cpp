@@ -17,7 +17,6 @@ Rcpp::List CWVSmix(int mcmc_samples,
                    double metrop_var_A22_trans,
                    double metrop_var_phi1_trans,
                    double metrop_var_phi2_trans,
-                   int interaction_indicator,
                    int likelihood_indicator,
                    Rcpp::Nullable<double> a_sigma2_epsilon_prior = R_NilValue,
                    Rcpp::Nullable<double> b_sigma2_epsilon_prior = R_NilValue,
@@ -46,10 +45,6 @@ int n = y.size();
 int m = z.n_cols/p;
 double max_time = (m - 1);
 int p_x = x.n_cols;
-int q = 0;
-if(interaction_indicator == 1){
-  q = (-1 + sqrt(1 + 8*p))/2;  //Solving for the Number of Main Effect Pollutants
-  } 
 
 arma::vec sigma2_epsilon(mcmc_samples); sigma2_epsilon.fill(0.00);
 arma::mat beta(p_x, mcmc_samples); beta.fill(0.00);
@@ -136,36 +131,10 @@ if(beta_init.isNotNull()){
 arma::mat lambda_star = arma::randn(p, m);
 arma::mat lambda_star_max(p, m); lambda_star_max.fill(0.00);
 
-if(interaction_indicator == 0){
-  for(int j = 0; j < p; ++ j){
-     for(int k = 0; k < m; ++ k){
-        lambda_star_max(j, k) = (lambda_star(j, k) > 0.00)*lambda_star(j, k);
-        }   
-     }
-  }
-
-if(interaction_indicator == 1){
-   
-   for(int j = 0; j < q; ++ j){
-      for(int k = 0; k < m; ++ k){
-         lambda_star_max(j, k) = (lambda_star(j, k) > 0.00)*lambda_star(j, k);
-         }   
-      }
-   
-   int counter = q;
-   for(int j = 0; j < (q - 1); ++ j){
-      for(int k = (j + 1); k < q; ++ k){
-         
-         for(int l = 0; l < m; ++ l){
-            lambda_star_max(counter, l) = (lambda_star(j, l) > 0.00)*(lambda_star(k, l) > 0.00)*(lambda_star(counter, l) > 0.00)*lambda_star(counter, l);
-            }
-         
-         counter = counter + 
-                   1;
-         
-         }
-      }
-   
+for(int j = 0; j < p; ++ j){
+   for(int k = 0; k < m; ++ k){
+      lambda_star_max(j, k) = (lambda_star(j, k) > 0.00)*lambda_star(j, k);
+      }   
    }
 
 arma::mat lambda_temp(p, m); lambda_temp.fill(0.00);
@@ -328,11 +297,9 @@ for(int j = 1; j < mcmc_samples; ++ j){
                                                lambda_temp,
                                                k,
                                                p,
-                                               q,
                                                m,
                                                x,
                                                z,
-                                               interaction_indicator,
                                                w,
                                                gamma,
                                                beta.col(j),
