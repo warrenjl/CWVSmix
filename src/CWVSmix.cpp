@@ -69,6 +69,7 @@ Rcpp::List CWVSmix(int mcmc_samples,
    arma::vec A21(mcmc_samples); A21.fill(0.00);
    arma::vec phi1(mcmc_samples); phi1.fill(0.00);
    arma::vec phi2(mcmc_samples); phi2.fill(0.00);
+   arma::mat alpha(m, mcmc_samples); alpha.fill(0.00);
    arma::vec neg_two_loglike(mcmc_samples); neg_two_loglike.fill(0.00);
    
    //Prior Information
@@ -496,6 +497,9 @@ Rcpp::List CWVSmix(int mcmc_samples,
       acctot_phi2_trans = Rcpp::as<int>(phi2_output[1]);
       temporal_corr_info2 = phi2_output[2];
       
+      //alpha Update
+      alpha.col(j) = delta.col(j)%(A11(j)*w1.col(j));
+      
       //neg_two_loglike Update
       neg_two_loglike(j) = neg_two_loglike_update(n,
                       p,
@@ -549,15 +553,16 @@ Rcpp::List CWVSmix(int mcmc_samples,
    return Rcpp::List::create(Rcpp::Named("sigma2_epsilon") = sigma2_epsilon,
                              Rcpp::Named("beta") = beta,
                              Rcpp::Named("lambda") = lambda,
-                             Rcpp::Named("rho") = rho,
-                             Rcpp::Named("delta") = delta,
-                             Rcpp::Named("w1") = w1,
-                             Rcpp::Named("w2") = w2,
+                             Rcpp::Named("phi_lambda") = rho,  //Name Change to Reflect Model Details
+                             Rcpp::Named("gamma") = delta,  //Name Change to Reflect Model Details
+                             Rcpp::Named("delta1") = w1,  //Name Change to Reflect Model Details
+                             Rcpp::Named("delta2") = w2,  //Name Change to Reflect Model Details
                              Rcpp::Named("A11") = A11,
                              Rcpp::Named("A22") = A22,
                              Rcpp::Named("A21") = A21,
                              Rcpp::Named("phi1") = phi1,
                              Rcpp::Named("phi2") = phi2,
+                             Rcpp::Named("alpha") = alpha,
                              Rcpp::Named("neg_two_loglike") = neg_two_loglike,
                              Rcpp::Named("acctot_lambda") = acctot_lambda,
                              Rcpp::Named("acctot_A11_trans") = acctot_A11_trans,

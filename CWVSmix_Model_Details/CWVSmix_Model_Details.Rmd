@@ -1,0 +1,93 @@
+---
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+# CWVSmix: Critical Window Variable Selection for Mixtures
+
+## Statistical Model
+$$Y_{i}|p_i \stackrel{\text{ind}}{\sim} \text{Bernoulli}\left(p_i\right),\ i=1,...,n;$$
+
+$$\ln\left(\frac{p_i}{1 - p_i}\right) = \textbf{x}_i^{\text{T}}\boldsymbol{\beta} + \sum_{t=1}^{m_i} \left[\sum_{j=1}^q \lambda_j\left(t\right) \text{z}_{ij}\left(t\right) + \sum_{j=1}^{q-1} \sum_{k=j+1}^q \widetilde{\lambda}_{jk}\left(t\right) \text{z}_{ij}\left(t\right)\text{z}_{ik}\left(t\right)\right]\alpha\left(t\right).$$
+
+## Time-Varying Weights
+\begin{align*}\begin{split}&\lambda_j\left(t\right) = \frac{\max\left\{\lambda^*_j\left(t\right), 0\right\}}{d\left(t\right)},\\ &\widetilde{\lambda}_{jk}\left(t\right) = \frac{\max\left\{\widetilde{\lambda}^*_{jk}\left(t\right) , 0\right\} 1\left\{\lambda^*_j\left(t\right) > 0\right\} 1\left\{\lambda^*_k\left(t\right) > 0\right\}}{d\left(t\right)},\\
+&t=1,...,m,\ j=1,...,q-1,\ k=j+1,...,q;\end{split}\end{align*}
+
+$$d\left(t\right) = {\sum_{j=1}^q \max\left\{\lambda^*_j\left(t\right), 0\right\} + \sum_{j=1}^{q-1} \sum_{k=j+1}^q \max\left\{\widetilde{\lambda}^*_{jk}\left(t\right), 0\right\} 1\left\{\lambda^*_j\left(t\right) > 0\right\} 1\left\{\lambda^*_k\left(t\right) > 0\right\}};
+$$
+\begin{align*}\begin{split}&\boldsymbol{\lambda}^* = \left\{\boldsymbol{\lambda}^*\left(1\right)^{\text{T}}, \hdots, \boldsymbol{\lambda}^*\left(m\right)^{\text{T}}\right\}^{\text{T}}|\phi_{\lambda} \sim \text{MVN}\left\{\boldsymbol{0}_{mq(q + 1)/2},\ \Sigma\left(\phi_{\lambda}\right) \otimes I_{q(q + 1)/2}\right\}.\end{split}\end{align*}
+
+* $m= \max\left\{m_i:i=1,...,n\right\};$
+
+* $\boldsymbol{\lambda}^*\left(t\right) = \left\{\lambda^*_1\left(t\right), \hdots, \lambda^*_q\left(t\right), \widetilde{\lambda}^*_{12}\left(t\right), \hdots, \widetilde{\lambda}^*_{q-1,q}\left(t\right)\right\}^{\text{T}};$
+
+* $\boldsymbol{0}_{mq(q+1)/2}$: Length $mq(q+1)/2$ vector with each entry equal to zero;
+
+* $\boldsymbol{I}_{q(q+1)/2}$: $q(q+1)/2$ by $q(q+1)/2$ identity matrix.
+
+## Mixture Risk
+$$\alpha\left(t\right)=\theta\left(t\right)\gamma\left(t\right),\ t=1,...,m;$$
+
+$$\gamma\left(t\right)|\pi\left(t\right)\stackrel{\text{ind}}{\sim}\text{Bernoulli}\left\{\pi\left(t\right)\right\},\ \Phi^{-1}\left\{\pi\left(t\right)\right\}=\eta\left(t\right);$$
+
+\[\left[\begin{array}{c}
+\theta\left(t\right)  \\
+\eta\left(t\right) \end{array}\right]=A\left[\begin{array}{c}
+\delta_1\left(t\right)  \\
+\delta_2\left(t\right) \end{array}\right],\ A=\left[\begin{array}{cc}
+A_{11} & 0  \\
+A_{21} & A_{22} \end{array}\right];
+\]
+
+
+$$\boldsymbol{\delta}_j=\left\{\delta_j\left(1\right),...,\delta_j\left(m\right)\right\}^\text{T}|\phi_j \stackrel{\text{ind}}{\sim} \text{MVN}\left\{\textbf{0}_m, \Sigma\left(\phi_j\right)\right\},\ j=1,2.$$
+
+## Prior Information
+$\beta_j \stackrel{\text{iid}}{\sim}\text{N}\left(0, \sigma^2_{\beta}\right),\ j=1,...,p;$
+
+* $p$: Length of $\textbf{x}_{ij}$ vector (same for all $i$, $j$);
+
+* Default setting: $\sigma^2_{\beta} = 10,000.$
+
+$\ln\left(A_{11}\right), \ln\left(A_{22}\right), A_{21} \stackrel{\text{iid}}{\sim}\text{N}\left(0, \sigma^2_A\right)$;
+
+* Default setting: $\sigma^2_A = 1.00.$
+
+$\phi_{\lambda}, \phi_j \stackrel{\text{iid}}{\sim}\text{Gamma}\left(\alpha_{\phi_j}, \beta_{\phi_j}\right),\ j=1,2;$
+
+* Default setting: $\alpha_{\phi_j} = 1.00$, $\beta_{\phi_j} = 1.00,\ j=1,2.$
+
+## Default Initial Values
+* $\beta_j = 0$ for all $j$;
+
+* $\gamma\left(t\right) = 1$ for all $t$;
+
+* $\delta_{j}\left(t\right) = 0$ for all $j$, $t$;
+
+* $\phi_{\lambda}, \phi_j = -\ln\left(0.05\right)/\left(m - 1\right)$ for all $j$;
+
+* $A_{jj} = 1$ for all $j$;
+
+* $A_{21} = 0$.
+
+## Interactions
+* interaction_indicator $=0$: $$\ln\left(\frac{p_i}{1 - p_i}\right) = \textbf{x}_i^{\text{T}}\boldsymbol{\beta} + \sum_{t=1}^{m_i} \sum_{j=1}^q \lambda_j\left(t\right) \text{z}_{ij}\left(t\right) \alpha\left(t\right);$$
+
+* interaction_indicator $=1$:  Full model with interactions as detailed above.
+
+## Alternate Likelihood
+$Y_i|\mu_i, \sigma^2_{\epsilon} \stackrel{\text{ind}}{\sim} \text{Normal}\left(\mu_i, \sigma^2_{\epsilon}\right),\ i=1,...,n;$
+
+$\mu_i = \textbf{x}_i^{\text{T}}\boldsymbol{\beta} + \sum_{t=1}^{m_i} \left[\sum_{j=1}^q \lambda_j\left(t\right) \text{z}_{ij}\left(t\right) + \sum_{j=1}^{q-1} \sum_{k=j+1}^q \widetilde{\lambda}_{jk}\left(t\right) \text{z}_{ij}\left(t\right)\text{z}_{ik}\left(t\right)\right]\alpha\left(t\right).$
+
+* $\sigma^2_{\epsilon} \sim \text{Inverse Gamma}\left(a_{\sigma^2_{\epsilon}}, b_{\sigma^2_{\epsilon}}\right)$; 
+
+* Default setting: $a_{\sigma^2_{\epsilon}} = 0.01$, $b_{\sigma^2_{\epsilon}} = 0.01$; 
+
+* Default initial value: $\sigma^2_{\epsilon} = 1.00.$
+
+* likelihood_indicator $= 0$: Bernoulli; 
+
+* likelihood_indicator $= 1$: Gaussian.
