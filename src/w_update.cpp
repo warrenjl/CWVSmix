@@ -21,7 +21,8 @@ arma::mat ident(m, m); ident.eye();
 arma::vec mean_w = x*beta_old + 
                    risk_sum*eta_full;
 
-arma::vec w = rcpp_pgdraw(1.00,
+arma::vec input(1); input.fill(1.00);
+arma::vec w = rcpp_pgdraw(input,
                           mean_w);
 
 arma::vec gamma = (y - 0.50)/w;

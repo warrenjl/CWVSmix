@@ -18,7 +18,7 @@ double unif_rs(double a,
 double exp_rs(double a, 
               double b);
 
-arma::vec rcpp_pgdraw(double b, 
+arma::vec rcpp_pgdraw(arma::vec b, 
                       arma::vec c);
 
 Rcpp::List temporal_corr_fun(int p_z,

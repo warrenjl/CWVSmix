@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // A11_update
 Rcpp::List A11_update(double A11_old, int n, int p, int m, arma::mat x, arma::mat z, double sigma2_A, arma::vec w, arma::vec gamma, arma::vec beta, arma::vec delta, arma::vec w1, arma::mat risk_sum, double metrop_var_A11_trans, int acctot_A11_trans);
 RcppExport SEXP _CWVSmix_A11_update(SEXP A11_oldSEXP, SEXP nSEXP, SEXP pSEXP, SEXP mSEXP, SEXP xSEXP, SEXP zSEXP, SEXP sigma2_ASEXP, SEXP wSEXP, SEXP gammaSEXP, SEXP betaSEXP, SEXP deltaSEXP, SEXP w1SEXP, SEXP risk_sumSEXP, SEXP metrop_var_A11_transSEXP, SEXP acctot_A11_transSEXP) {
@@ -276,12 +281,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcpp_pgdraw
-arma::vec rcpp_pgdraw(double b, arma::vec c);
+arma::vec rcpp_pgdraw(arma::vec b, arma::vec c);
 RcppExport SEXP _CWVSmix_rcpp_pgdraw(SEXP bSEXP, SEXP cSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type b(bSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type c(cSEXP);
     rcpp_result_gen = Rcpp::wrap(rcpp_pgdraw(b, c));
     return rcpp_result_gen;
