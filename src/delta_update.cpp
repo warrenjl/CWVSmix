@@ -13,6 +13,7 @@ Rcpp::List delta_update(arma::vec delta_old,
                         arma::vec y,
                         arma::mat x,
                         arma::mat z,
+                        arma::vec off_set,
                         arma::vec w,
                         arma::vec gamma,
                         arma::vec beta,
@@ -61,7 +62,7 @@ for(int j = 0; j < m; ++ j){
         log_pi = log(pi(j));
         }
             
-      pieces(k) = -0.50*dot((gamma - x*beta - risk_sum*eta_full), w%(gamma - x*beta - risk_sum*eta_full)) +
+      pieces(k) = -0.50*dot((gamma - off_set - x*beta - risk_sum*eta_full), w%(gamma - off_set - x*beta - risk_sum*eta_full)) +
                   log_pi;
             
       }

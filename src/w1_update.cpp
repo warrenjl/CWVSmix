@@ -11,6 +11,7 @@ Rcpp::List w1_update(int n,
                      int m,
                      arma::mat x,
                      arma::mat z,
+                     arma::vec off_set,
                      arma::vec w,
                      arma::vec gamma,
                      arma::vec beta,
@@ -43,7 +44,7 @@ arma::mat cov_w1 = inv_sympd(cov_piece_trans*(w_mat%cov_piece) +
                              A21_old*A21_old*ident + 
                              corr_inv1);
 
-arma::vec mean_w1 = cov_w1*(cov_piece_trans*(w%(gamma - x*beta)) + 
+arma::vec mean_w1 = cov_w1*(cov_piece_trans*(w%(gamma - off_set - x*beta)) + 
                             A21_old*delta_star_piece);
 
 arma::mat ind_norms = arma::randn(1, 

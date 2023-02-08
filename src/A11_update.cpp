@@ -12,6 +12,7 @@ Rcpp::List A11_update(double A11_old,
                       int m,
                       arma::mat x,
                       arma::mat z,
+                      arma::vec off_set,
                       double sigma2_A,
                       arma::vec w,
                       arma::vec gamma,
@@ -32,7 +33,8 @@ for(int j = 0; j < m; ++ j){
 double A11_trans_old = log(A11_old);
 arma::vec eta_full_old = A11_old*eta_sub;
   
-arma::vec mean_piece_old = gamma - 
+arma::vec mean_piece_old = gamma -
+                           off_set -
                            x*beta - 
                            risk_sum*eta_full_old;
 
@@ -46,6 +48,7 @@ double A11 = exp(A11_trans);
 arma::vec eta_full = A11*eta_sub;
    
 arma::vec mean_piece = gamma - 
+                       off_set -
                        x*beta - 
                        risk_sum*eta_full;
 
