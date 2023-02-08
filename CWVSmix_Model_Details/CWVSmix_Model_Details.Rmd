@@ -77,7 +77,7 @@ $\phi_{\lambda}, \phi_j \stackrel{\text{iid}}{\sim}\text{Gamma}\left(\alpha_{\ph
 
 * interaction_indicator $=1$:  Full model with interactions as detailed above.
 
-## Alternate Likelihood
+## Alternate Likelihood: Gaussian
 $Y_i|\mu_i, \sigma^2_{\epsilon} \stackrel{\text{ind}}{\sim} \text{Normal}\left(\mu_i, \sigma^2_{\epsilon}\right),\ i=1,...,n;$
 
 $\mu_i = \textbf{x}_i^{\text{T}}\boldsymbol{\beta} + \sum_{t=1}^{m_i} \left[\sum_{j=1}^q \lambda_j\left(t\right) \text{z}_{ij}\left(t\right) + \sum_{j=1}^{q-1} \sum_{k=j+1}^q \widetilde{\lambda}_{jk}\left(t\right) \text{z}_{ij}\left(t\right)\text{z}_{ik}\left(t\right)\right]\alpha\left(t\right).$
@@ -88,6 +88,21 @@ $\mu_i = \textbf{x}_i^{\text{T}}\boldsymbol{\beta} + \sum_{t=1}^{m_i} \left[\sum
 
 * Default initial value: $\sigma^2_{\epsilon} = 1.00.$
 
+## Alternate Likelihood: Negative Binomial
+$Y_i|r, p_i \stackrel{\text{ind}}{\sim} \text{Negative Binomial}\left(r, p_i\right),\ i=1,...,n;$
+
+$\text{ln}\left(\frac{p_i}{1 - p_i}\right) = \text{O}_i + \textbf{x}_i^{\text{T}}\boldsymbol{\beta} + \sum_{t=1}^{m_i} \left[\sum_{j=1}^q \lambda_j\left(t\right) \text{z}_{ij}\left(t\right) + \sum_{j=1}^{q-1} \sum_{k=j+1}^q \widetilde{\lambda}_{jk}\left(t\right) \text{z}_{ij}\left(t\right)\text{z}_{ik}\left(t\right)\right]\alpha\left(t\right).$
+
+* $r \sim \text{Discrete Uniform}\left[a_r, b_r\right];$ 
+
+* Default setting: $a_r = 1$, $b_r = 100$; 
+
+* Default initial value: $r = b_r$.
+
+## Likelihood Indicator
+
 * likelihood_indicator $= 0$: Bernoulli; 
 
-* likelihood_indicator $= 1$: Gaussian.
+* likelihood_indicator $= 1$: Gaussian;
+
+* likelihood_indicator $= 2$: Negative binomial.
