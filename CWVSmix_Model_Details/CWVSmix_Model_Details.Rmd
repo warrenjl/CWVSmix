@@ -7,7 +7,7 @@ output:
 # CWVSmix: Critical Window Variable Selection for Mixtures
 
 ## Statistical Model
-$$Y_{i}|p_i \stackrel{\text{ind}}{\sim} \text{Bernoulli}\left(p_i\right),\ i=1,...,n;$$
+$$Y_{i}|p_i \stackrel{\text{ind}}{\sim} \text{Binomial}\left(c_i, p_i\right),\ i=1,...,n;$$
 
 $$\ln\left(\frac{p_i}{1 - p_i}\right) = \textbf{x}_i^{\text{T}}\boldsymbol{\beta} + \sum_{t=1}^{m_i} \left[\sum_{j=1}^q \lambda_j\left(t\right) \text{z}_{ij}\left(t\right) + \sum_{j=1}^{q-1} \sum_{k=j+1}^q \widetilde{\lambda}_{jk}\left(t\right) \text{z}_{ij}\left(t\right)\text{z}_{ik}\left(t\right)\right]\alpha\left(t\right).$$
 
@@ -101,7 +101,7 @@ $\text{ln}\left(\frac{p_i}{1 - p_i}\right) = \text{O}_i + \textbf{x}_i^{\text{T}
 
 ## Likelihood Indicator
 
-* likelihood_indicator $= 0$: Bernoulli; 
+* likelihood_indicator $= 0$: Binomial; 
 
 * likelihood_indicator $= 1$: Gaussian;
 
