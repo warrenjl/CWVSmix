@@ -41,8 +41,8 @@ lambda_update <- function(lambda_star, lambda_old, ind, p, q, m, x, z, interacti
     .Call(`_CWVSmix_lambda_update`, lambda_star, lambda_old, ind, p, q, m, x, z, interaction_indicator, off_set, w, gamma, beta, eta_full, risk_sum, temporal_corr_inv_old, metrop_var_lambda_trans, acctot_lambda)
 }
 
-neg_two_loglike_update <- function(n, p, m, y, x, z, off_set, likelihood_indicator, r, sigma2_epsilon, beta, eta_full, risk_sum) {
-    .Call(`_CWVSmix_neg_two_loglike_update`, n, p, m, y, x, z, off_set, likelihood_indicator, r, sigma2_epsilon, beta, eta_full, risk_sum)
+neg_two_loglike_update <- function(n, p, m, y, x, z, off_set, tri_als, likelihood_indicator, r, sigma2_epsilon, beta, eta_full, risk_sum) {
+    .Call(`_CWVSmix_neg_two_loglike_update`, n, p, m, y, x, z, off_set, tri_als, likelihood_indicator, r, sigma2_epsilon, beta, eta_full, risk_sum)
 }
 
 norm_rs <- function(a, b) {

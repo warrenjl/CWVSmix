@@ -239,8 +239,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // neg_two_loglike_update
-double neg_two_loglike_update(int n, int p, int m, arma::vec y, arma::mat x, arma::mat z, arma::vec off_set, int likelihood_indicator, int r, double sigma2_epsilon, arma::vec beta, arma::vec eta_full, arma::mat risk_sum);
-RcppExport SEXP _CWVSmix_neg_two_loglike_update(SEXP nSEXP, SEXP pSEXP, SEXP mSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP off_setSEXP, SEXP likelihood_indicatorSEXP, SEXP rSEXP, SEXP sigma2_epsilonSEXP, SEXP betaSEXP, SEXP eta_fullSEXP, SEXP risk_sumSEXP) {
+double neg_two_loglike_update(int n, int p, int m, arma::vec y, arma::mat x, arma::mat z, arma::vec off_set, arma::vec tri_als, int likelihood_indicator, int r, double sigma2_epsilon, arma::vec beta, arma::vec eta_full, arma::mat risk_sum);
+RcppExport SEXP _CWVSmix_neg_two_loglike_update(SEXP nSEXP, SEXP pSEXP, SEXP mSEXP, SEXP ySEXP, SEXP xSEXP, SEXP zSEXP, SEXP off_setSEXP, SEXP tri_alsSEXP, SEXP likelihood_indicatorSEXP, SEXP rSEXP, SEXP sigma2_epsilonSEXP, SEXP betaSEXP, SEXP eta_fullSEXP, SEXP risk_sumSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -251,13 +251,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type z(zSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type off_set(off_setSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type tri_als(tri_alsSEXP);
     Rcpp::traits::input_parameter< int >::type likelihood_indicator(likelihood_indicatorSEXP);
     Rcpp::traits::input_parameter< int >::type r(rSEXP);
     Rcpp::traits::input_parameter< double >::type sigma2_epsilon(sigma2_epsilonSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type eta_full(eta_fullSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type risk_sum(risk_sumSEXP);
-    rcpp_result_gen = Rcpp::wrap(neg_two_loglike_update(n, p, m, y, x, z, off_set, likelihood_indicator, r, sigma2_epsilon, beta, eta_full, risk_sum));
+    rcpp_result_gen = Rcpp::wrap(neg_two_loglike_update(n, p, m, y, x, z, off_set, tri_als, likelihood_indicator, r, sigma2_epsilon, beta, eta_full, risk_sum));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -484,7 +485,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CWVSmix_exp_rs", (DL_FUNC) &_CWVSmix_exp_rs, 2},
     {"_CWVSmix_half_norm_rs", (DL_FUNC) &_CWVSmix_half_norm_rs, 2},
     {"_CWVSmix_lambda_update", (DL_FUNC) &_CWVSmix_lambda_update, 18},
-    {"_CWVSmix_neg_two_loglike_update", (DL_FUNC) &_CWVSmix_neg_two_loglike_update, 13},
+    {"_CWVSmix_neg_two_loglike_update", (DL_FUNC) &_CWVSmix_neg_two_loglike_update, 14},
     {"_CWVSmix_norm_rs", (DL_FUNC) &_CWVSmix_norm_rs, 2},
     {"_CWVSmix_phi_update", (DL_FUNC) &_CWVSmix_phi_update, 8},
     {"_CWVSmix_r_update", (DL_FUNC) &_CWVSmix_r_update, 12},
