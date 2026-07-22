@@ -100,7 +100,7 @@ $\text{ln}\left(\frac{p_i}{1 - p_i}\right) = \text{O}_i + \textbf{x}_i^{\text{T}
 * Default initial value: $r = b_r$.
 
 ## Alternate Likelihood: Conditional Logistic Regression
-For $1{:}1$ matched case-control data, let $k=1,...,K$ index matched pairs, with $\textbf{x}_{ki}$ and $\textbf{z}_{ki}$ denoting the covariate vectors for subject $i \in \{0,1\}$ (control, case) within pair $k$. The conditional likelihood, obtained by conditioning on the event that exactly one member of each pair is a case, is given as:
+For $1{:}1$ matched case-control data, let $l=1,...,L$ index matched pairs, with $\textbf{x}_{li}$ and $\textbf{z}_{li}$ denoting the covariate vectors for subject $i \in \{0,1\}$ (control, case) within pair $l$. The conditional likelihood, obtained by conditioning on the event that exactly one member of each pair is a case, is given as:
 
 \begin{align*}
 P\left(Y_{l1} = 1 | Y_{l0} + Y_{l1} = 1\right) &= \frac{\exp\left\{\eta_{l1}\right\}}{\exp\left\{\eta_{l1}\right\} + \exp\left\{\eta_{l0}\right\}},\ l=1,...,L; \\
